@@ -10,7 +10,7 @@ const StockDetails = ({ route }) => {
   const [stockData, setStockData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [balance, setBalance] = useState(100000); // Start balance of $100,000
+  const [balance, setBalance] = useState(100000);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [numberOfShares, setNumberOfShares] = useState('');
 
@@ -100,10 +100,10 @@ const StockDetails = ({ route }) => {
             }
         ],
         'plain-text',
-        '1' // Default value
+        '1'
     );
     } else {
-      Alert.alert('Market Closed', 'The market is currently closed. Please try again during market hours.');
+      Alert.alert('Market Closed', 'The market is currently closed. Please try again during market hours             (Mon-Fri 9:30-4).');
     }
   };
 

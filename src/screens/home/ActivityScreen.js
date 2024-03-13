@@ -103,11 +103,11 @@ const styles = StyleSheet.create({
     paddingLeft:15,
   },
   sharesContainer: {
-    marginLeft: 'auto', // Align to the right
+    marginLeft: 'auto',
   },
   sharesText: {
     fontSize: 16,
-    marginLeft: -5, // Adjust this value to add space between ticker and shares/price
+    marginLeft: -5,
   },
   sharestotal:{
     marginTop:5,

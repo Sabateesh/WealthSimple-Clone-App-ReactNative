@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import LogoFetcher from './logofetch';
 
 const MarketMoversCarousel = () => {
   const [marketData, setMarketData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const carouselRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -19,23 +22,25 @@ const MarketMoversCarousel = () => {
         const data = await Promise.all(responses.map(response => response.json()));
 
         const structuredData = [
-            { 
-              title: 'Most Active Stocks 🔥', 
-              description: 'Most Frequently traded today',
-              data: data[2]
-            },
-            { 
-              title: 'Day Gainers 📈', 
-              description: 'Stocks with the biggest price increases today',
-              data: data[0] 
-            },
-            { 
-              title: 'Day Losers 📉', 
-              description: 'Stocks with the biggest price drops today',
-              data: data[1] 
-            },
+          {
+            title: 'Most Active Stocks 🔥',
+            description: 'Most Frequently traded today',
+            data: data[2],
+            button: 'Active',
+          },
+          {
+            title: 'Day Gainers 📈',
+            description: 'Stocks with the biggest price increases today',
+            data: data[0],
+            button: 'Gainers',
+          },
+          {
+            title: 'Day Losers 📉',
+            description: 'Stocks with the biggest price drops today',
+            data: data[1],
+            button: 'Losers',
+          },
         ];
-          
 
         setMarketData(structuredData);
       } catch (error) {
@@ -52,11 +57,11 @@ const MarketMoversCarousel = () => {
     <View style={styles.slide}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.description}>{item.description}</Text>
-  
+
       {item.data.map((stock, index) => (
         <View key={index} style={styles.stockContainer}>
           <View style={styles.stockLeft}>
-          <LogoFetcher tickerSymbol={stock.Symbol} />
+            <LogoFetcher tickerSymbol={stock.Symbol} />
             <View style={styles.stockInfo}>
               <Text style={styles.symbol}>{stock.Symbol}</Text>
               <Text style={styles.name}>{stock.Name}</Text>
@@ -64,7 +69,12 @@ const MarketMoversCarousel = () => {
           </View>
           <View style={styles.stockRight}>
             <Text style={styles.price}>${stock['Price (Intraday)'].toFixed(2)}</Text>
-            <Text style={[styles.change, { color: stock['% Change'] > 0 ? 'green' : 'red' }]}>
+            <Text
+              style={[
+                styles.change,
+                { color: stock['% Change'] > 0 ? 'green' : 'red' },
+              ]}
+            >
               ({stock['% Change'].toFixed(2)}%)
             </Text>
           </View>
@@ -72,40 +82,70 @@ const MarketMoversCarousel = () => {
       ))}
     </View>
   );
-  
-  
-
-  if (loading) {
-    return <Text>Loading...</Text>;
-  }
 
   return (
-    <View style={{ paddingTop: 55 }}>
-    <Carousel
-      data={marketData}
-      renderItem={renderSlide}
-      sliderWidth={Dimensions.get('window').width}
-      itemWidth={Dimensions.get('window').width * 0.85}
-      layout={'default'}
-    />
+    <View style={{ paddingTop: 25 }}>
+      {loading ? (
+        <Text>Loading...</Text>
+      ) : (
+        <>
+          <View style={styles.buttonContainer}>
+            {marketData.map((item, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.button,
+                  { backgroundColor: index === activeIndex ? '#312F2E' : '#FBFBFB' },
+                ]}
+                onPress={() => {
+                  carouselRef.current.snapToItem(index);
+                  setActiveIndex(index);
+                }}
+              >
+                <Text
+                  style={[
+                    styles.buttonText,
+                    { color: index === activeIndex ? '#FCFCFB' : '#312F2E' },
+                  ]}
+                >
+                  {item.button}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <Carousel
+            ref={carouselRef}
+            data={marketData}
+            renderItem={renderSlide}
+            sliderWidth={Dimensions.get('window').width}
+            itemWidth={Dimensions.get('window').width * 0.85}
+            layout={'default'}
+            onSnapToItem={(index) => setActiveIndex(index)}
+          />
+        </>
+      )}
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   slide: {
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 15,
-    paddingBottom:100,
+    paddingBottom: 70,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingRight:115
+    paddingRight: 115,
+    borderWidth:.5,
+    borderColor: '#DEDCDB'
   },
   title: {
-    fontSize: 18,
+    fontSize: 19,
     fontWeight: 'bold',
     paddingBottom: 10,
+    color:'#312F2F'
   },
   stockContainer: {
     flexDirection: 'row',
@@ -138,9 +178,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   description: {
-    fontSize: 14,
-    color: 'grey',
+    fontSize: 18,
+    color: '#63615E',
     paddingBottom: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: '#312F2E',
+    padding: 10,
+    marginHorizontal: 5,
+    borderRadius: 20,
+  },
+  buttonText: {
+    fontSize: 22,
+    color: '#FCFCFC',
+    fontWeight: '700'
   },
 });
 
