@@ -15,6 +15,7 @@ import Activity from './src/screens/home/ActivityScreen.js';
 import SearchStackNavigator from './src/screens/home/SearchStackNavigator.js';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Icon5 from 'react-native-vector-icons/Octicons';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 
 const Tab = createBottomTabNavigator();
@@ -99,9 +100,11 @@ export default function App() {
   }, []);
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <NavigationContainer>
       <MyTabs />
     </NavigationContainer>
+    </GestureHandlerRootView>
   );
 }
 

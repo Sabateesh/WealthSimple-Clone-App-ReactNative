@@ -4,6 +4,7 @@ import { LineChart } from 'react-native-chart-kit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LogoFetcher from '../components/logofetch';
 import Dialog from 'react-native-dialog';
+import StockChart from '../components/stockchart';
 
 const StockDetails = ({ route }) => {
   const { symbol } = route.params;
@@ -33,15 +34,6 @@ const StockDetails = ({ route }) => {
         setStockData({
           ...data,
           quote: filteredQuote
-        });
-
-        const historyResponse = await fetch(`http://127.0.0.1:5000/stock_history?symbol=${symbol}`);
-        const historyData = await historyResponse.json();
-        setHistoricalData({
-          labels: historyData.dates,
-          datasets: [{
-            data: historyData.prices
-          }]
         });
       } catch (error) {
         console.error('Error fetching stock data:', error);
@@ -181,40 +173,7 @@ const StockDetails = ({ route }) => {
         {stockData.price ? `$${stockData.price.toFixed(2)}` : 'N/A'}
         <Text style={styles.currency}> USD</Text>
       </Text>
-
-      {historicalData && (
-        <LineChart
-          data={historicalData}
-          width={Dimensions.get('window').width + 25}
-          height={390}
-          chartConfig={{
-            backgroundColor: "#FCFCFC",
-            backgroundGradientFrom: "#FCFCFC",
-            backgroundGradientTo: "#FCFCFC",
-            decimalPlaces: 1,
-            color: (opacity = 0.1) => `#7b9a54`,
-            style: {
-            },
-            propsForDots: {
-              r: "0.0",
-              strokeWidth: "5",
-              stroke: "#00ff00"
-            }
-          }}
-          withVerticalLabels={false}
-          withHorizontalLabels={false}
-          withVerticalLines={false}
-          withHorizontalLines={false}
-          bezier
-          style={{
-            paddingRight: 0,
-            borderRadius: 16,
-            paddingTop: 0,
-            marginRight: 20,
-            backgroundColor: '#FCFCFC',
-          }}
-        />
-      )}
+      <StockChart symbol={symbol} />
       <Text style={styles.testLine}>1 Year Trend</Text>
 
       <View style={styles.table}>
