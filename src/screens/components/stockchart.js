@@ -56,7 +56,6 @@ const StockChart = ({ symbol }) => {
         enableIndicator
         indicatorPulsating
         enableFadeInMask
-        bezier={true}
       />
     </View>
   );
