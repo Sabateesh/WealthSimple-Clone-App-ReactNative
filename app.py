@@ -60,7 +60,7 @@ def get_stock_history():
         return jsonify({'error': 'No stock symbol provided'}), 400
 
     try:
-        start_date = (datetime.now() - pd.DateOffset(years=1)).strftime('%Y-%m-%d')
+        start_date = (datetime.now() - pd.DateOffset(years=5)).strftime('%Y-%m-%d')
         historical_data = get_data(stock_symbol.upper(), start_date=start_date, end_date=end_date)
         prices = historical_data['close'].tolist()
         dates = historical_data.index.strftime('%Y-%m-%d').tolist()

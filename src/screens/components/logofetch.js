@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderRadius: 25,
     borderColor:'#000000',
-    borderWidth: 0.3,
+    borderWidth: 0.0,
   },
   logo: {
     width: 40,

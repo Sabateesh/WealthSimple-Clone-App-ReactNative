@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MarketMovers from '../components/Carosel';
 import { LineChart } from 'react-native-chart-kit';
+import SecondCarousel from '../components/Homecarousel'
 
 const HomeScreen = () => {
   const [balance, setBalance] = useState(0);
@@ -76,7 +76,7 @@ const HomeScreen = () => {
 
 
   return (
-    <ScrollView>
+    <ScrollView style={styles.container1}>
       <View style={styles.container}>
         <LineChart
           data={{
@@ -131,11 +131,18 @@ const HomeScreen = () => {
         <View style={styles.addContainer}>
           <Text style={styles.balanceText}>Add an account</Text>
         </View>
+        <View style={styles.morecontainer}>
+          <Text style={styles.moreText}>More</Text>
+        </View>
+        <SecondCarousel></SecondCarousel>
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  container1:{
+    backgroundColor: '#FCFCFC'
+  },
   container: {
     flex: 1,
     paddingTop: 30,
@@ -186,7 +193,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
-    padding: 30,
+    padding: 20,
     borderWidth: 1,
     borderColor: '#E3E1E0',
     borderRadius:8,
@@ -205,11 +212,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     marginLeft:10,
     marginRight:10,
-
   },
   balanceText: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#312F2E',
   },
   balance: {
@@ -217,6 +223,14 @@ const styles = StyleSheet.create({
     color: '#312F2E',
     fontWeight: '700'
   },
+  moreText:{
+    color:'#312F2E',
+    fontSize: 20,
+    fontWeight: '700',
+    paddingTop:25,
+    paddingLeft:25,   
+    paddingBottom:20
+  }
 });
 
 export default HomeScreen;

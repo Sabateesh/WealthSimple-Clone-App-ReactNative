@@ -174,7 +174,7 @@ const StockDetails = ({ route }) => {
         <Text style={styles.currency}> USD</Text>
       </Text>
       <StockChart symbol={symbol} />
-      <Text style={styles.testLine}>1 Year Trend</Text>
+      <Text style={styles.testLine}>5 Year Trend</Text>
 
       <View style={styles.table}>
         <View style={styles.column}>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     marginVertical: 10,
-    marginTop: -80,
+    marginTop: 10,
     backgroundColor: '#FCFCFC',
   },
   divider: {
