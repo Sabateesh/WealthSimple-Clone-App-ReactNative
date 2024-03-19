@@ -25,7 +25,7 @@ const HomeScreen = () => {
     fetchData();
     const interval = setInterval(() => {
       updateTotalSharesValue();
-    }, 1 * 60 * 1000); // Update ever 5 min
+    }, 1 * 60 * 1000); // Update every 1 min
     const dailyInterval = setInterval(() => {
       updatePortfolioHistory();
     }, 24 * 60 * 60 * 1000);
@@ -51,9 +51,12 @@ const HomeScreen = () => {
   
       sales.forEach(sale => {
         if (holdings[sale.symbol]) {
-          holdings[sale.symbol] -= parseInt(sale.quantity);
+          console.log(`Before sale: ${sale.symbol} holdings: ${holdings[sale.symbol]}, sale quantity: ${sale.quantity}`);
+          holdings[sale.symbol] -= Math.abs(parseInt(sale.quantity));
+          console.log(`After sale: ${sale.symbol} holdings: ${holdings[sale.symbol]}`);
         }
       });
+  
       let totalValue = 0;
       for (const symbol in holdings) {
         if (holdings[symbol] > 0) {
@@ -63,14 +66,12 @@ const HomeScreen = () => {
         }
       }
   
-      console.log(`Holdings after sales: ${JSON.stringify(holdings)}`);
-      console.log(`Total shares value: ${totalValue}`);
-  
       setTotalSharesValue(totalValue);
     } catch (error) {
       console.error('Error updating total shares value:', error);
     }
   };
+  
   
 
   const loadPortfolioHistory = async () => {

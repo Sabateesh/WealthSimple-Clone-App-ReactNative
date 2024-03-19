@@ -11,7 +11,7 @@ const StockDetails = ({ route }) => {
   const [stockData, setStockData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [balance, setBalance] = useState(100000);
+  const [balance, setBalance] = useState(0);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [numberOfShares, setNumberOfShares] = useState('');
 
@@ -42,7 +42,20 @@ const StockDetails = ({ route }) => {
       }
     };
 
+    const fetchBalance = async () => {
+      try {
+        const storedBalance = await AsyncStorage.getItem('balance');
+        setBalance(storedBalance ? parseFloat(storedBalance) : 100000);
+      } catch (error) {
+        console.error('Error fetching balance:', error);
+      }
+    };
+  
+
+
     fetchStockData();
+    fetchBalance();
+
   }, [symbol]);
   const handleBuy = async () => {
     const now = new Date()

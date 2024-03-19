@@ -84,6 +84,7 @@ const MarketMoversCarousel = () => {
   );
 
   return (
+
     <View style={{ paddingTop: 25 }}>
       {loading ? (
         <Text>Loading...</Text>
