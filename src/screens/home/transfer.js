@@ -26,7 +26,6 @@ const Transfer = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Move</Text>
       <ScrollView style={styles.container}></ScrollView>
       {options.map((option, index) => (
         <OptionItem key={index} {...option} />
@@ -39,14 +38,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    padding: 20,
-    paddingBottom: 10,
-    paddingTop:50,
-    paddingLeft:170
   },
   option: {
     paddingVertical: 25,

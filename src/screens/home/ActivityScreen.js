@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList,Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 import LogoFetcher from '../components/logofetch';
@@ -36,6 +36,7 @@ const ActivityScreen = () => {
       fetchPurchases();
     }, [])
   );
+
 
   return (
     <View style={styles.container}>

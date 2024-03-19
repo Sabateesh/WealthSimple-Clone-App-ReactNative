@@ -49,7 +49,7 @@ function MyTabs() {
         inactiveTintColor: 'gray',
       }}
     >
-      <Tab.Screen
+<Tab.Screen
   name="Home"
   component={HomeScreen}
   options={{
@@ -68,7 +68,15 @@ function MyTabs() {
 />
 
       <Tab.Screen name="Search" component={SearchStackNavigator} options={{ headerShown: false }}/>
-      <Tab.Screen name="Transfer" component={Transfer} options={{ headerShown: false }}/>
+      <Tab.Screen name="Transfer" component={Transfer}
+      options={{
+        headerTitle: "Move",
+        headerTitleStyle: {
+          paddingBottom:10,
+        },
+      }}
+      />
+
       <Tab.Screen name="Activity" component={Activity} />
     </Tab.Navigator>
   );

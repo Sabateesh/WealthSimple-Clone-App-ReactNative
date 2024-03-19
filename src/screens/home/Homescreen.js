@@ -25,7 +25,7 @@ const HomeScreen = () => {
     fetchData();
     const interval = setInterval(() => {
       updateTotalSharesValue();
-    }, 5 * 60 * 1000); // Update ever 5 min
+    }, 1 * 60 * 1000); // Update ever 5 min
     const dailyInterval = setInterval(() => {
       updatePortfolioHistory();
     }, 24 * 60 * 60 * 1000);
@@ -38,19 +38,40 @@ const HomeScreen = () => {
     try {
       const storedPurchases = await AsyncStorage.getItem('purchases');
       const purchases = storedPurchases ? JSON.parse(storedPurchases) : [];
+      const storedSales = await AsyncStorage.getItem('transactions');
+      const sales = storedSales ? JSON.parse(storedSales) : [];
+      let holdings = {};
+  
+      purchases.forEach(purchase => {
+        if (!holdings[purchase.symbol]) {
+          holdings[purchase.symbol] = 0;
+        }
+        holdings[purchase.symbol] += parseInt(purchase.quantity);
+      });
+  
+      sales.forEach(sale => {
+        if (holdings[sale.symbol]) {
+          holdings[sale.symbol] -= parseInt(sale.quantity);
+        }
+      });
       let totalValue = 0;
-
-      for (const purchase of purchases) {
-        const response = await fetch(`http://127.0.0.1:5000/stock_price?symbol=${purchase.symbol}`);
-        const data = await response.json();
-        totalValue += purchase.quantity * data.price;
+      for (const symbol in holdings) {
+        if (holdings[symbol] > 0) {
+          const response = await fetch(`http://127.0.0.1:5000/stock_price?symbol=${symbol}`);
+          const data = await response.json();
+          totalValue += holdings[symbol] * data.price;
+        }
       }
-
+  
+      console.log(`Holdings after sales: ${JSON.stringify(holdings)}`);
+      console.log(`Total shares value: ${totalValue}`);
+  
       setTotalSharesValue(totalValue);
     } catch (error) {
       console.error('Error updating total shares value:', error);
     }
   };
+  
 
   const loadPortfolioHistory = async () => {
     try {

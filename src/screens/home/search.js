@@ -10,14 +10,22 @@ import ImageCarousel from '../components/imagecarrosel';
 const SearchScreen = () => {
   const [query, setQuery] = useState('');
   const [stocks, setStocks] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
   const navigation = useNavigation();
 
+  const handleSearchFocus = () => {
+    setIsFocused(true);
+  };
+  const handleSearchBlur = () => {
+    setIsFocused(false);
+  };
+  
+  
   const handleSearch = async () => {
     if (query.trim() === '') {
       setStocks([]);
       return;
     }
-  
     try {
       const response = await fetch(`http://127.0.0.1:5000/stock_price?symbol=${query.trim()}`);
       const data = await response.json();
@@ -30,43 +38,50 @@ const SearchScreen = () => {
       console.error('Error fetching stock price:', error);
       setStocks([]);
     }
+
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.headercontainer}>
-      <Text style={styles.title}>Discover</Text>
-      <View style={styles.searchContainer}>
-        <Icon name="search" size={20} color="#000" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          onChangeText={setQuery}
-          value={query}
-          placeholder="Search"
-          returnKeyType="search"
-          onSubmitEditing={handleSearch}
-        />
+        <Text style={styles.title}>Discover</Text>
+        <View style={styles.searchContainer}>
+          <Icon name="search" size={20} color="#000" style={styles.searchIcon} />
+          <TextInput
+            style={styles.searchInput}
+            onChangeText={setQuery}
+            value={query}
+            placeholder="Search"
+            returnKeyType="search"
+            onFocus={handleSearchFocus}
+            onBlur={handleSearchBlur}
+            onSubmitEditing={handleSearch}
+          />
+        </View>
       </View>
-      </View>
-      <FlatList
-        data={stocks}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            style={styles.stockItem} 
-            onPress={() => navigation.navigate('StockDetails', { symbol: item.symbol, price: item.price })}
-          >
-            <Text style={styles.stockName}>{item.symbol}</Text>
-            <Text style={styles.stockPrice}>${item.price.toFixed(2)}</Text>
-          </TouchableOpacity>
-        )}
-      />
-      <ScrollView style={styles.carouselContainer}>
-        <ImageCarousel />
-        <MarketMovers />
-      </ScrollView>
+          <FlatList
+            data={stocks}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={styles.stockItem}
+                onPress={() => navigation.navigate('StockDetails', { symbol: item.symbol, price: item.price })}
+              >
+                <Text style={styles.stockName}>{item.symbol}</Text>
+                <Text style={styles.stockPrice}>${item.price.toFixed(2)}</Text>
+              </TouchableOpacity>
+            )}
+          />
+      {query.trim() === '' && (  
+        <>
+          <ScrollView style={styles.carouselContainer}>
+            <ImageCarousel />
+            <MarketMovers />
+          </ScrollView>
+        </>
+      )}
     </View>
-  );
+  );  
 };
 
 const styles = StyleSheet.create({
