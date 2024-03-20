@@ -2,13 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Image, View, StyleSheet } from 'react-native';
 import axios from 'axios';
 
-const LogoFetcher = ({ tickerSymbol }) => {
+const LogoFetcher = ({ tickerSymbol, type = 'stock' }) => {
   const [logoUrl, setLogoUrl] = useState(null);
 
   useEffect(() => {
     const fetchLogoUrl = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/logo?ticker=${tickerSymbol}`);
+        const apiUrl = type === 'crypto'
+          ? `http://127.0.0.1:5000/crypto_logo?symbol=${tickerSymbol}`
+          : `http://127.0.0.1:5000/logo?ticker=${tickerSymbol}`;
+
+        const response = await axios.get(apiUrl);
         const logoData = response.data[0];
         if (logoData) {
           setLogoUrl(logoData.image);
@@ -19,7 +23,8 @@ const LogoFetcher = ({ tickerSymbol }) => {
     };
 
     fetchLogoUrl();
-  }, [tickerSymbol]);
+  }, [tickerSymbol, type]);
+
 
   return (
     <View style={styles.container}>

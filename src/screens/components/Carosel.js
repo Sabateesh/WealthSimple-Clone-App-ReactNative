@@ -17,6 +17,7 @@ const MarketMoversCarousel = () => {
           'http://127.0.0.1:5000/day_gainers',
           'http://127.0.0.1:5000/day_losers',
           'http://127.0.0.1:5000/most_active',
+          'http://127.0.0.1:5000/top_cryptos',
         ];
         const responses = await Promise.all(urls.map(url => fetch(url)));
         const data = await Promise.all(responses.map(response => response.json()));
@@ -40,7 +41,15 @@ const MarketMoversCarousel = () => {
             data: data[1],
             button: 'Losers',
           },
+          {
+            title: 'Top Cryptocurrencies 💰',
+            description: 'Cryptocurrencies with the highest market cap',
+            data: data[3].slice(0, 3),
+            button: 'Cryptos',
+            isCrypto: true,
+          },
         ];
+        
 
         setMarketData(structuredData);
       } catch (error) {
@@ -53,38 +62,46 @@ const MarketMoversCarousel = () => {
     fetchMarketData();
   }, []);
 
-  const renderSlide = ({ item }) => (
-    <View style={styles.slide}>
-      <Text style={styles.title}>{item.title}</Text>
-      <Text style={styles.description}>{item.description}</Text>
-
-      {item.data.map((stock, index) => (
-        <View key={index} style={styles.stockContainer}>
-          <View style={styles.stockLeft}>
-            <LogoFetcher tickerSymbol={stock.Symbol} />
-            <View style={styles.stockInfo}>
-              <Text style={styles.symbol}>{stock.Symbol}</Text>
-              <Text style={styles.name}>{stock.Name}</Text>
+  const renderSlide = ({ item }) => {
+    if (!item) {
+      return null; // or return some placeholder component
+    }
+    return (
+      <View style={styles.slide}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.description}>{item.description}</Text>
+  
+        {item.data.map((stock, index) => (
+          <View key={index} style={styles.stockContainer}>
+            <View style={styles.stockLeft}>
+              <LogoFetcher
+                tickerSymbol={stock.Symbol}
+                type={item.isCrypto ? 'crypto' : 'stock'}
+              />
+              <View style={styles.stockInfo}>
+                <Text style={styles.symbol}>{stock.Symbol}</Text>
+                <Text style={styles.name}>{stock.Name}</Text>
+              </View>
+            </View>
+            <View style={styles.stockRight}>
+              <Text style={styles.price}>${stock['Price (Intraday)'].toFixed(2)}</Text>
+              <Text
+                style={[
+                  styles.change,
+                  { color: stock['% Change'] > 0 ? 'green' : 'red' },
+                ]}
+              >
+                ({stock['% Change'].toFixed(2)}%)
+              </Text>
             </View>
           </View>
-          <View style={styles.stockRight}>
-            <Text style={styles.price}>${stock['Price (Intraday)'].toFixed(2)}</Text>
-            <Text
-              style={[
-                styles.change,
-                { color: stock['% Change'] > 0 ? 'green' : 'red' },
-              ]}
-            >
-              ({stock['% Change'].toFixed(2)}%)
-            </Text>
-          </View>
-        </View>
-      ))}
-    </View>
-  );
+        ))}
+      </View>
+    );
+  };
+  
 
   return (
-
     <View style={{ paddingTop: 25 }}>
       {loading ? (
         <Text>Loading...</Text>
@@ -115,13 +132,13 @@ const MarketMoversCarousel = () => {
             ))}
           </View>
           <Carousel
-            ref={carouselRef}
-            data={marketData}
-            renderItem={renderSlide}
-            sliderWidth={Dimensions.get('window').width}
-            itemWidth={Dimensions.get('window').width * 0.85}
-            layout={'default'}
-            onSnapToItem={(index) => setActiveIndex(index)}
+          ref={carouselRef}
+          data={marketData}
+          renderItem={({ item }) => renderSlide({ item })}
+          sliderWidth={Dimensions.get('window').width}
+          itemWidth={Dimensions.get('window').width * 0.85}
+          layout={'default'}
+          onSnapToItem={(index) => setActiveIndex(index)}
           />
         </>
       )}
@@ -191,7 +208,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#312F2E',
     padding: 10,
-    marginHorizontal: 5,
+    marginHorizontal: 1,
     borderRadius: 20,
   },
   buttonText: {

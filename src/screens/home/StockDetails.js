@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import LogoFetcher from '../components/logofetch';
 import Dialog from 'react-native-dialog';
 import StockChart from '../components/stockchart';
+import StockNews from '../components/StockNews';
 
 const StockDetails = ({ route }) => {
   const { symbol } = route.params;
@@ -303,6 +304,7 @@ const StockDetails = ({ route }) => {
           ))}
         </View>
       </View>
+      <StockNews ticker={symbol} />
       <View style={styles.buttonContainer}>
       <CustomButton
         title="Buy"
