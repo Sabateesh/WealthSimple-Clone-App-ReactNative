@@ -5,24 +5,37 @@ import { LineGraph, GraphPoint, AxisLabel } from 'react-native-graph';
 const StockChart = ({ symbol }) => {
   const [historicalData, setHistoricalData] = useState(null);
   const [selectedPoint, setSelectedPoint] = useState(null);
+  
 
   useEffect(() => {
     const fetchStockHistory = async () => {
       try {
         const response = await fetch(`http://127.0.0.1:5000/stock_history?symbol=${symbol}`);
         const data = await response.json();
-        const points = data.prices.map((price, index) => ({
-          date: new Date(data.dates[index]),
-          value: price,
-        }));
-        setHistoricalData(points);
+        const pointsByMonth = {};
+  
+        data.prices.forEach((price, index) => {
+          const date = new Date(data.dates[index]);
+          const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+  
+          if (!pointsByMonth[monthKey] || date.getDate() > pointsByMonth[monthKey].date.getDate()) {
+            pointsByMonth[monthKey] = {
+              date: date,
+              value: price,
+            };
+          }
+        });
+  
+        const monthlyPoints = Object.values(pointsByMonth);
+        setHistoricalData(monthlyPoints);
       } catch (error) {
         console.error('Error fetching stock history:', error);
       }
     };
-
+  
     fetchStockHistory();
   }, [symbol]);
+  
 
   const onPointSelected = (point) => {
     setSelectedPoint(point);

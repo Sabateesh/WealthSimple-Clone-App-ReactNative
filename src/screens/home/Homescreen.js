@@ -15,6 +15,7 @@ const HomeScreen = () => {
         const storedBalance = await AsyncStorage.getItem('balance');
         setBalance(storedBalance ? parseFloat(storedBalance) : 100000);
 
+        await updateBalance();
         await updateTotalSharesValue();
         await loadPortfolioHistory();
       } catch (error) {
@@ -25,15 +26,27 @@ const HomeScreen = () => {
     fetchData();
     const interval = setInterval(() => {
       updateTotalSharesValue();
+      updateBalance();
     }, 1 * 60 * 1000); // Update every 1 min
     const dailyInterval = setInterval(() => {
       updatePortfolioHistory();
-    }, 24 * 60 * 60 * 1000);
+
+    }, 1 * 60 * 1000);
     return () => {
       clearInterval(interval);
       clearInterval(dailyInterval);
     };
   }, []);
+
+  const updateBalance = async () => {
+    try {
+      const storedBalance = await AsyncStorage.getItem('balance');
+      setBalance(storedBalance ? parseFloat(storedBalance) : 100000);
+    } catch (error) {
+      console.error('Error fetching balance:', error);
+    }
+  };
+
   const updateTotalSharesValue = async () => {
     try {
       const storedPurchases = await AsyncStorage.getItem('purchases');
@@ -65,6 +78,10 @@ const HomeScreen = () => {
           totalValue += holdings[symbol] * data.price;
         }
       }
+
+      console.log(totalSharesValue);
+      
+
   
       setTotalSharesValue(totalValue);
     } catch (error) {

@@ -98,7 +98,9 @@ const StockDetails = ({ route }) => {
                       price: stockData.price,
                       date: new Date(),
                       quantity: numberOfShares,
-                      totalCost: totalCost
+                      totalCost: totalCost,
+                      action: 'Buy'
+
                   };
 
                   try {
@@ -170,12 +172,13 @@ const StockDetails = ({ route }) => {
                   date: new Date(),
                   quantity: -numberOfShares,
                   totalRevenue: totalRevenue,
+                  action: 'Sale'
               };
           
               const existingTransactions = await AsyncStorage.getItem('transactions');
               const transactions = existingTransactions ? JSON.parse(existingTransactions) : [];
               transactions.push(sale);
-              await AsyncStorage.setItem('transactions', JSON.stringify(transactions));
+              await AsyncStorage.setItem('sales', JSON.stringify(transactions));
 
               console.log(`Selling ${numberOfShares} shares at $${stockData.price.toFixed(2)} each`);
               console.log(`Total revenue from sale: $${totalRevenue.toFixed(2)}`);
