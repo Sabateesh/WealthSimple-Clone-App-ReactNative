@@ -14,10 +14,10 @@ const MarketMoversCarousel = () => {
     const fetchMarketData = async () => {
       try {
         const urls = [
-          'http://127.0.0.1:5000/day_gainers',
-          'http://127.0.0.1:5000/day_losers',
-          'http://127.0.0.1:5000/most_active',
-          'http://127.0.0.1:5000/top_cryptos',
+          'https://sabateesh.pythonanywhere.com/day_gainers',
+          'https://sabateesh.pythonanywhere.com/day_losers',
+          'https://sabateesh.pythonanywhere.com/most_active',
+          'https://sabateesh.pythonanywhere.com/top_cryptos',
         ];
         const responses = await Promise.all(urls.map(url => fetch(url)));
         const data = await Promise.all(responses.map(response => response.json()));

@@ -16,6 +16,7 @@ import SearchStackNavigator from './src/screens/home/SearchStackNavigator.js';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Icon5 from 'react-native-vector-icons/Octicons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {

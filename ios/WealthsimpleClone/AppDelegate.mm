@@ -2,6 +2,9 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTLinkingManager.h>
+#import <UIKit/UIKit.h>
+
+
 
 @implementation AppDelegate
 

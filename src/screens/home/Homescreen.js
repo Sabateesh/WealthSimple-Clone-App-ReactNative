@@ -51,7 +51,7 @@ const HomeScreen = () => {
     try {
       const storedPurchases = await AsyncStorage.getItem('purchases');
       const purchases = storedPurchases ? JSON.parse(storedPurchases) : [];
-      const storedSales = await AsyncStorage.getItem('transactions');
+      const storedSales = await AsyncStorage.getItem('sales');
       const sales = storedSales ? JSON.parse(storedSales) : [];
       let holdings = {};
   

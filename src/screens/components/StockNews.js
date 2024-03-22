@@ -8,7 +8,7 @@ const StockNews = ({ ticker }) => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get(`http://127.0.0.1:5000/news/${ticker}`);
+        const response = await axios.get(`https://sabateesh.pythonanywhere.com/news/${ticker}`);
         setNews(response.data.slice(0, 3));
       } catch (error) {
         console.error('Error fetching news:', error);

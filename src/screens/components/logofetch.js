@@ -9,8 +9,8 @@ const LogoFetcher = ({ tickerSymbol, type = 'stock' }) => {
     const fetchLogoUrl = async () => {
       try {
         const apiUrl = type === 'crypto'
-          ? `http://127.0.0.1:5000/crypto_logo?symbol=${tickerSymbol}`
-          : `http://127.0.0.1:5000/logo?ticker=${tickerSymbol}`;
+          ? `https://sabateesh.pythonanywhere.com/crypto_logo?symbol=${tickerSymbol}`
+          : `https://sabateesh.pythonanywhere.com/logo?ticker=${tickerSymbol}`;
 
         const response = await axios.get(apiUrl);
         const logoData = response.data[0];

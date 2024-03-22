@@ -10,7 +10,7 @@ const StockChart = ({ symbol }) => {
   useEffect(() => {
     const fetchStockHistory = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/stock_history?symbol=${symbol}`);
+        const response = await fetch(`https://sabateesh.pythonanywhere.com/stock_history?symbol=${symbol}`);
         const data = await response.json();
         const pointsByMonth = {};
   
