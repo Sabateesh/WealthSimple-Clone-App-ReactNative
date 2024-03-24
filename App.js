@@ -147,7 +147,7 @@ function UserStack() {
         name="User"
         component={UserScreen}
         options={{
-          headerTitle: 'User Profile',
+          headerTitle: '',
           headerRight: () => (
             <TouchableOpacity onPress={() => console.log('Settings pressed')}>
               <Icon name="settings" size={25} color="#000" style={{ marginRight: 15 }} />
