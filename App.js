@@ -7,6 +7,7 @@ import Icon2 from 'react-native-vector-icons/Feather';
 import Icon3 from "react-native-vector-icons/Fontisto";
 import Icon4 from "react-native-vector-icons/FontAwesome6";
 import React, { useEffect } from 'react';
+import UserScreen from './src/screens/home/profile.js';
 
 import HomeScreen from './src/screens/home/Homescreen.js';
 import SearchScreen from './src/screens/home/search.js';
@@ -16,11 +17,17 @@ import SearchStackNavigator from './src/screens/home/SearchStackNavigator.js';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Icon5 from 'react-native-vector-icons/Octicons';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import LoginScreen from './src/screens/home/login.js';
+import { createStackNavigator } from '@react-navigation/stack';
+import RegisterScreen from './src/screens/home/register.js';
+import { useFonts } from 'expo-font';
 
 const Tab = createBottomTabNavigator();
 
 function MyTabs() {
+
   return (
+
     <Tab.Navigator
       initialRouteName="Home"
       screenOptions={({ route }) => ({
@@ -51,19 +58,22 @@ function MyTabs() {
 <Tab.Screen
   name="Home"
   component={HomeScreen}
-  options={{
+  options={({ navigation }) => ({
     headerTitle: "Home",
     headerRight: () => (
       <View style={{ flexDirection: 'row' }}>
         <TouchableOpacity style={{ marginRight: 20 }} onPress={() => {}}>
           <Icon5 name="gift" size={25} color="#000" />
         </TouchableOpacity>
-        <TouchableOpacity style={{ marginRight: 15 }} onPress={() => {}}>
+        <TouchableOpacity
+          style={{ marginRight: 15 }}
+          onPress={() => navigation.navigate('UserStack')}
+        >
           <Icon2 name="user" size={25} color="#000" />
         </TouchableOpacity>
       </View>
     ),
-  }}
+  })}
 />
 
       <Tab.Screen name="Search" component={SearchStackNavigator} options={{ headerShown: false }}/>
@@ -76,12 +86,18 @@ function MyTabs() {
       }}
       />
 
+
       <Tab.Screen name="Activity" component={Activity} />
     </Tab.Navigator>
   );
 }
 
+
 export default function App() {
+  let [fontsLoaded] = useFonts({
+    'EBGaramond': require('./src/assets/fonts/EBGaramond-VariableFont_wght.ttf'),
+    'EBGaramond-Bold': require('./src/assets/fonts/EBGaramond-Bold.ttf'),
+  });
   useEffect(() => {
     const authenticate = async () => {
       const hasHardware = await LocalAuthentication.hasHardwareAsync();
@@ -106,14 +122,58 @@ export default function App() {
     authenticate();
   }, []);
 
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-    <NavigationContainer>
-      <MyTabs />
-    </NavigationContainer>
-    </GestureHandlerRootView>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          <AppStack />
+        </NavigationContainer>
+      </GestureHandlerRootView>
   );
 }
+
+
+
+
+const Stack = createStackNavigator();
+
+function UserStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="User"
+        component={UserScreen}
+        options={{
+          headerTitle: 'User Profile',
+          headerRight: () => (
+            <TouchableOpacity onPress={() => console.log('Settings pressed')}>
+              <Icon name="settings" size={25} color="#000" style={{ marginRight: 15 }} />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function AppStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/*Commented out for testing purposes*/}
+      {/*<Stack.Screen name="Login" component={LoginScreen} />*/}
+      {/*<Stack.Screen name="Register" component={RegisterScreen} />*/}
+      <Stack.Screen name="Main" component={MyTabs} />
+      <Stack.Screen name="UserStack" component={UserStack} />
+    </Stack.Navigator>
+  );
+}
+
+
+
+
 
 const styles = StyleSheet.create({
   container: {
@@ -123,3 +183,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+

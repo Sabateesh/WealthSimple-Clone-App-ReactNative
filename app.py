@@ -2,6 +2,19 @@ import requests
 from flask import Flask, jsonify, request
 from datetime import datetime
 from requests_html import HTMLSession
+from flask import Flask, jsonify, request, redirect, url_for, render_template
+
+from flask_login import LoginManager, UserMixin, login_required
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
+
+
+from flask import request, redirect, url_for, render_template, session
+from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import sessionmaker
+
+from flask_login import login_required
+
 
 import pandas as pd
 
@@ -9,7 +22,74 @@ from yahoo_fin.stock_info import get_live_price, get_quote_table, get_data, get_
 from yahoo_fin import news
 
 
+# Database setup
+Base = declarative_base()
+engine = create_engine('sqlite:///wealthsimple_clone.db')
+Session = sessionmaker(bind=engine)
+db_session = Session()
+
+# Flask app setup
 app = Flask(__name__)
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+# User model
+class User(Base, UserMixin):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    email = Column(String(100), unique=True, nullable=False)
+    password = Column(String(100), nullable=False)
+
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return db_session.query(User).get(user_id)
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return render_template('dashboard.html')
+
+
+
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    email = data['email']
+    password = data['password']
+    hashed_password = generate_password_hash(password)
+
+    existing_user = db_session.query(User).filter_by(email=email).first()
+    if existing_user:
+        return jsonify({'success': False, 'message': 'Email already exists'}), 409
+
+    new_user = User(email=email, password=hashed_password)
+    db_session.add(new_user)
+    db_session.commit()
+
+    return jsonify({'success': True}), 201
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data['email']
+    password = data['password']
+    user = db_session.query(User).filter_by(email=email).first()
+    if user and check_password_hash(user.password, password):
+        return jsonify({'success': True}), 200
+    else:
+        return jsonify({'success': False}), 401
+
+
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('index'))
+
+
 
 @app.route('/logo', methods=['GET'])
 def get_logo():
@@ -175,5 +255,7 @@ def get_stock_news(ticker):
 
 
 if __name__ == '__main__':
+    Base.metadata.create_all(engine)
     app.run(host='0.0.0.0', debug=True)
+
 
