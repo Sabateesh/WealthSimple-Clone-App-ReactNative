@@ -148,6 +148,9 @@ function UserStack() {
         component={UserScreen}
         options={{
           headerTitle: '',
+          headerStyle: {
+            color: '#000',
+          },
           headerRight: () => (
             <TouchableOpacity onPress={() => console.log('Settings pressed')}>
               <Icon name="settings" size={25} color="#000" style={{ marginRight: 15 }} />
@@ -159,12 +162,13 @@ function UserStack() {
   );
 }
 
+
 function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {/*Commented out for testing purposes*/}
-      {/*<Stack.Screen name="Login" component={LoginScreen} />*/}
-      {/*<Stack.Screen name="Register" component={RegisterScreen} />*/}
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="Main" component={MyTabs} />
       <Stack.Screen name="UserStack" component={UserStack} />
     </Stack.Navigator>
@@ -178,7 +182,7 @@ function AppStack() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FDFDFD',
     alignItems: 'center',
     justifyContent: 'center',
   },

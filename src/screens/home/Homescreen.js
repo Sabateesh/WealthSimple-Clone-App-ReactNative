@@ -3,11 +3,14 @@ import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LineChart } from 'react-native-chart-kit';
 import SecondCarousel from '../components/Homecarousel'
+import PortfolioValueChart from '../components/portfolio';
 
 const HomeScreen = () => {
   const [balance, setBalance] = useState(0);
   const [totalSharesValue, setTotalSharesValue] = useState(0);
-  const [portfolioHistory, setPortfolioHistory] = useState([]);
+  const [portfolioHistory, setPortfolioHistory] = useState([]);  
+  const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,41 +120,7 @@ const HomeScreen = () => {
   return (
     <ScrollView style={styles.container1}>
       <View style={styles.container}>
-        <LineChart
-          data={{
-            labels: portfolioHistory.map(entry => entry.date),
-            datasets: [
-              {
-                data: portfolioHistory.map(entry => entry.value),
-              },
-            ],
-          }}
-          width={Dimensions.get('window').width - 16} 
-          height={200}
-          chartConfig={{
-            backgroundColor: "#ffffff",
-            backgroundGradientFrom: "#ffffff",
-            backgroundGradientTo: "#ffffff",
-            decimalPlaces: 2,
-            color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-            style: {
-              borderRadius: 16,
-              paddingTop:-100,
-              paddingBottom:10
-            },
-            propsForDots: {
-              r: "6",
-              strokeWidth: "2",
-              stroke: "#ffa726",
-            },
-          }}          
-          withVerticalLabels={false}
-          withHorizontalLabels={false}
-          withVerticalLines={false}
-          withHorizontalLines={false}
-          bezier
-        />
+        <PortfolioValueChart portfolioHistory={portfolioHistory} />
       </View>
         <Text style={styles.HoldingText}>Holdings</Text>
         <View style={styles.holdContainer}>

@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
+import Icon2 from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon3 from 'react-native-vector-icons/Fontisto';
+import { MdOutlineShowChart } from "react-icons/md";
+
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Card } from '@rneui/themed';
 import profileimg from '../../assets/profileimg.png'
@@ -71,6 +76,57 @@ const UserScreen = () => {
         </TouchableOpacity>
       </Card>
       <Text style={styles.headerTitle2}>Your top Core benefits</Text>
+    <Card containerStyle={styles.benefitsCard}>
+  <View style={styles.benefitItem}>
+    <Icon2 name="piggy-bank-outline" size={24} color="black" />
+    <Text style={styles.benefitText}>Earn 4% interest on your Cash account</Text>
+  </View>
+  <Text style={styles.benefitDetail}>And enjoy a 0.5% boost for direct deposit.</Text>
+  
+  <View style={styles.divider} />
+
+  <View style={styles.benefitItem}>
+    <Icon3 name="line-chart" size={24} color="black" />
+    <Text style={styles.benefitText}>Commission-free trading</Text>
+  </View>
+  <Text style={styles.benefitDetail}>Plus instant deposits up to $50,000 CAD.</Text>
+
+  <View style={styles.divider} />
+
+  <View style={styles.benefitItem}>
+    <Icon name="bar-chart-2" size={24} color="black" />
+    <Text style={styles.benefitText}>Investment portfolios built by experts</Text>
+  </View>
+  <Text style={styles.benefitDetail}>But with management fees as low as 0.5%.</Text>
+  
+  <TouchableOpacity style={styles.exploreButton}>
+    <Text style={styles.exploreButtonText2}>Explore all benefits</Text>
+  </TouchableOpacity>
+</Card>
+
+    <Text style={styles.headerTitle3}>More</Text>
+
+    <Card containerStyle={styles.cardContainer}>
+  <View style={styles.cardHeader}>
+    <Text style={styles.cardHeaderText}>USD accounts</Text>
+    <View style={styles.cardHeaderStatus}>
+      <Text style={styles.cardHeaderStatusText}>Active</Text>
+      <Text style={styles.cardHeaderAmount}>$10/mo</Text>
+      <Icon name="chevron-right" size={24} color="black" />
+    </View>
+  </View>
+  <Text style={styles.cardSubText}>Ending Never</Text>
+
+  <View style={styles.divider} />
+
+  <View style={styles.cardContent}>
+    <Text style={styles.cardContentText}>Support</Text>
+    <Text style={styles.cardSubText2}>Talk to a real human.</Text>
+    <Icon name="chevron-right" size={24} color="black" style={styles.cardChevron} />
+
+  </View>
+</Card>
+
     </ScrollView>
   );
 };
@@ -80,8 +136,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'#F0F0F0'
-
+    backgroundColor:'#FDFDFD'
   },
   progressBarContainer: {
     height: 15,
@@ -134,15 +189,135 @@ const styles = StyleSheet.create({
     color:'#312F2E'
   },
   scrollView:{
-    backgroundColor:'#F0F0F0'
+    backgroundColor:'#FDFDFD'
   },
   headerContainer:{
-    backgroundColor:'#F0F0F0'
+    backgroundColor:'#FDFDFD'
   },
   profileImage: {
     width: 399,
     height: 105,
     alignSelf: 'center',
+  },
+  benefitsCard: {
+    marginTop: -10,
+    borderRadius: 15,
+    padding: 20,
+    backgroundColor: '#FDFDFD',
+    borderColor:'#FDFDFD',
+  },
+  benefitsTitle: {
+    fontWeight: '700',
+    fontSize: 20,
+    marginBottom: 15,
+    color: '#312F2E',
+  },
+  benefitItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  benefitText: {
+    marginLeft: 10,
+    fontSize: 18,
+    fontWeight:'700',
+    color: '#312F2E',
+  },
+  benefitDetail: {
+    marginLeft: 34,
+    fontSize: 16,
+    color: '#625E5B',
+    marginBottom: 10,
+  },
+  divider: {
+    borderBottomWidth: 0.4,
+    borderBottomColor: '#ccc',
+    marginTop: 10,
+    marginBottom: 10,
+    width: '90%',
+    alignSelf: 'center',
+  },
+  exploreButton: {
+    marginTop: 10,
+  },
+  exploreButtonText: {
+    color: '#312F2E',
+    fontSize: 16,
+  },
+  exploreButtonText2: {
+    color: '#312F2E',
+    fontSize: 18,
+    textAlign:'right'
+  },
+  headerTitle3:{
+    fontWeight:'700',
+    fontSize:20,
+    paddingTop:25,
+    paddingBottom:10,
+    padding:18,
+    color:'#312F2E'
+  },
+  cardContainer: {
+    borderRadius: 8,
+    backgroundColor: '#FFF',
+    borderWidth:0.1,
+    borderColor:'#FDFDFD'
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+  },
+  cardHeaderText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  cardHeaderStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  cardHeaderStatusText: {
+    backgroundColor: '#CDEACE',
+    borderRadius: 12, 
+    color: '#5AAB61', 
+    fontSize: 12,
+    fontWeight: 'bold',
+    overflow: 'hidden', 
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginRight: 30,
+  },
+  cardHeaderAmount: {
+    fontWeight: 'bold',
+    color: '#333',
+    fontSize:19
+  },
+  cardSubText: {
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+    marginTop:-10,
+    fontSize: 16,
+    color: '#666',
+  },
+  cardContent: {
+    padding: 16,
+  },
+  cardContentText: {
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  cardChevron: {
+    position: 'absolute',
+    right: 16,
+    top: '50%',
+    marginTop: -12, 
+  },
+  cardSubText2: {
+    paddingBottom: 10,
+    paddingTop: 10,
+    fontSize: 16,
+    color: '#666',
   },
 
 });
