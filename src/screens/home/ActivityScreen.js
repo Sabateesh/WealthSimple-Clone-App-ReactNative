@@ -14,9 +14,8 @@ const ActivityScreen = () => {
       const parsedPurchases = storedPurchases ? JSON.parse(storedPurchases) : [];
       const parsedSales = storedSales ? JSON.parse(storedSales) : [];
 
-      // Combine purchases and sales into one list and sort by date
       const combinedTransactions = [...parsedPurchases, ...parsedSales].sort(
-        (a, b) => new Date(b.date) - new Date(a.date) // Sort in descending order; most recent first
+        (a, b) => new Date(b.date) - new Date(a.date)
       );
 
       setTransactions(combinedTransactions);

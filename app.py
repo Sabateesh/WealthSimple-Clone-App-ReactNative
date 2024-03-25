@@ -1,94 +1,110 @@
-import requests
-from flask import Flask, jsonify, request
-from datetime import datetime
-from requests_html import HTMLSession
-from flask import Flask, jsonify, request, redirect, url_for, render_template
-
-from flask_login import LoginManager, UserMixin, login_required
-from sqlalchemy import create_engine, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
-
-
-from flask import request, redirect, url_for, render_template, session
-from werkzeug.security import generate_password_hash, check_password_hash
-from sqlalchemy.orm import sessionmaker
-
-from flask_login import login_required
-
-
 import pandas as pd
 
 from yahoo_fin.stock_info import get_live_price, get_quote_table, get_data, get_quote_data, get_day_gainers, get_day_losers, get_day_most_active
 from yahoo_fin import news
 
 
-# Database setup
-Base = declarative_base()
-engine = create_engine('sqlite:///wealthsimple_clone.db')
-Session = sessionmaker(bind=engine)
-db_session = Session()
+import os
+
+
+
+import requests
+from flask import Flask, jsonify, request, redirect, url_for, render_template
+from flask_login import LoginManager, UserMixin, login_required
+from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+import logging
+import os
+from requests_html import HTMLSession
+from datetime import datetime
+
+
+secret_key = os.urandom(16)
+print(secret_key)
+
+
+
+# Set up logging
+logging.basicConfig(level=logging.DEBUG, filename='app.log', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Flask app setup
 app = Flask(__name__)
+app.config['SECRET_KEY'] = b'\x10d\x7f\x99\xfa\x88\xe8\xe2B*\x86\xe9\x14\xc1\xa7\xbd'
+
+# Construct the path to the database file
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, 'wealthsimple_clone.db')
+
+# Configure the SQLAlchemy database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_path
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Initialize SQLAlchemy with the Flask app
+db = SQLAlchemy(app)
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
-
 # User model
-class User(Base, UserMixin):
-    __tablename__ = 'users'
-    id = Column(Integer, primary_key=True)
-    email = Column(String(100), unique=True, nullable=False)
-    password = Column(String(100), nullable=False)
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
 
+with app.app_context():
+    db.create_all()
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return db_session.query(User).get(user_id)
+    return User.query.get(int(user_id))
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
     return render_template('dashboard.html')
 
-
-
 @app.route('/register', methods=['POST'])
 def register():
-    data = request.get_json()
-    email = data['email']
-    password = data['password']
-    hashed_password = generate_password_hash(password)
+    try:
+        data = request.get_json()
+        email = data['email']
+        password = data['password']
 
-    existing_user = db_session.query(User).filter_by(email=email).first()
-    if existing_user:
-        return jsonify({'success': False, 'message': 'Email already exists'}), 409
+        logging.info(f'Received registration request with email: {email}')
 
-    new_user = User(email=email, password=hashed_password)
-    db_session.add(new_user)
-    db_session.commit()
+        hashed_password = generate_password_hash(password)
 
-    return jsonify({'success': True}), 201
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            logging.warning(f'Email already exists: {email}')
+            return jsonify({'success': False, 'message': 'Email already exists'}), 409
+
+        new_user = User(email=email, password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+
+        logging.info(f'User registered successfully: {email}')
+        return jsonify({'success': True}), 201
+    except Exception as e:
+        logging.error(f'Error during registration: {e}')
+        return jsonify({'success': False, 'message': 'Registration failed'}), 500
 
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     email = data['email']
     password = data['password']
-    user = db_session.query(User).filter_by(email=email).first()
+    user = User.query.filter_by(email=email).first()
     if user and check_password_hash(user.password, password):
         return jsonify({'success': True}), 200
     else:
         return jsonify({'success': False}), 401
 
-
-
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
     return redirect(url_for('index'))
-
 
 
 @app.route('/logo', methods=['GET'])
@@ -132,12 +148,12 @@ def get_stock_price():
 
     except Exception as e:
         return jsonify({'error': f'Error fetching data for {stock_symbol}: {str(e)}'}), 500
-    
+
 @app.route('/stock_history', methods=['GET'])
 def get_stock_history():
     stock_symbol = request.args.get('symbol')
     end_date = datetime.now().strftime('%Y-%m-%d')
-    
+
     if not stock_symbol:
         return jsonify({'error': 'No stock symbol provided'}), 400
 
@@ -149,11 +165,11 @@ def get_stock_history():
         return jsonify({'symbol': stock_symbol, 'dates': dates, 'prices': prices}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 @app.route('/stock_info', methods=['GET'])
 def get_stock_info():
     stock_symbol = request.args.get('symbol')
-    
+
     if not stock_symbol:
         return jsonify({'error': 'No stock symbol provided'}), 400
 
@@ -161,7 +177,7 @@ def get_stock_info():
         price = get_live_price(stock_symbol.upper())
         quote_data = get_quote_data(stock_symbol.upper())
         currency = quote_data.get('currency', 'USD')
-        
+
         return jsonify({
             'symbol': stock_symbol,
             'price': price,
@@ -169,7 +185,7 @@ def get_stock_info():
         }), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 @app.route('/day_gainers', methods=['GET'])
 def day_gainers():
     try:
@@ -230,7 +246,7 @@ def get_crypto_logo():
 
     if not crypto_symbol:
         return jsonify({'error': 'No cryptocurrency symbol provided'}), 400
-    
+
     api_url = 'https://api.api-ninjas.com/v1/logo?'
     if crypto_symbol:
         api_url += f'ticker={crypto_symbol}'
@@ -242,7 +258,7 @@ def get_crypto_logo():
             return jsonify({'error': f'Error fetching logo: {response.text}'}), response.status_code
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+
 
 @app.route('/news/<ticker>', methods=['GET'])
 def get_stock_news(ticker):
@@ -255,7 +271,4 @@ def get_stock_news(ticker):
 
 
 if __name__ == '__main__':
-    Base.metadata.create_all(engine)
-    app.run(host='0.0.0.0', debug=True)
-
-
+    app.run(host='0.0.0.0', port=5001,debug=True)

@@ -27,7 +27,7 @@ const SearchScreen = () => {
       return;
     }
     try {
-      const response = await fetch(`http://127.0.0.1:5000/stock_price?symbol=${query.trim()}`);
+      const response = await fetch(`https://sabateesh.pythonanywhere.com/stock_price?symbol=${query.trim()}`);
       const data = await response.json();
       if (data.price) {
         setStocks([{ symbol: data.symbol, price: data.price }]);

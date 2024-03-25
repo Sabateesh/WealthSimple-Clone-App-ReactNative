@@ -19,7 +19,7 @@ const StockDetails = ({ route }) => {
   useEffect(() => {
     const fetchStockData = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:5000/stock_price?symbol=${symbol}`);
+        const response = await fetch(`https://sabateesh.pythonanywhere.com/stock_price?symbol=${symbol}`);
         const data = await response.json();
         let quote = data.quote;
 
