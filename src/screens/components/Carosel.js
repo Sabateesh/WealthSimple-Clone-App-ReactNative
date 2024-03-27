@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import LogoFetcher from './logofetch';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MarketMoversCarousel = () => {
   const [marketData, setMarketData] = useState([]);
@@ -9,6 +10,7 @@ const MarketMoversCarousel = () => {
   const carouselRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const cacheDuration = 3600000; // 1 hour in milliseconds
 
   useEffect(() => {
     const fetchMarketData = async () => {
@@ -50,8 +52,9 @@ const MarketMoversCarousel = () => {
           },
         ];
         
-
+        await AsyncStorage.setItem('marketMoversData', JSON.stringify({ data: structuredData, timestamp: Date.now() }));
         setMarketData(structuredData);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching market data:', error);
       } finally {
@@ -62,9 +65,27 @@ const MarketMoversCarousel = () => {
     fetchMarketData();
   }, []);
 
+  useEffect(() => {
+    const loadCachedData = async () => {
+      const cachedDataString = await AsyncStorage.getItem('marketMoversData');
+      if (cachedDataString) {
+        const { data, timestamp } = JSON.parse(cachedDataString);
+        const now = Date.now();
+        if (now - timestamp < cacheDuration) {
+          setMarketData(data);
+          setLoading(false);
+          return;
+        }
+      }
+      fetchMarketData();
+    };
+  
+    loadCachedData();
+  }, []);
+
   const renderSlide = ({ item }) => {
     if (!item) {
-      return null; // or return some placeholder component
+      return null;
     }
     return (
       <View style={styles.slide}>

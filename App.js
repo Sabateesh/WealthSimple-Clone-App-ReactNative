@@ -21,6 +21,7 @@ import LoginScreen from './src/screens/home/login.js';
 import { createStackNavigator } from '@react-navigation/stack';
 import RegisterScreen from './src/screens/home/register.js';
 import { useFonts } from 'expo-font';
+import HoldingsScreen from './src/screens/home/holdings.js';
 
 const Tab = createBottomTabNavigator();
 
@@ -166,8 +167,8 @@ function UserStack() {
 function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Login" component={LoginScreen} />
-      <Stack.Screen name="Register" component={RegisterScreen} />
+      {/* <Stack.Screen name="Login" component={LoginScreen} /> */}
+      {/*<Stack.Screen name="Register" component={RegisterScreen} />  */}
       <Stack.Screen
         name="Main"
         component={MyTabs}
@@ -176,6 +177,10 @@ function AppStack() {
         }}
       />
       <Stack.Screen name="UserStack" component={UserStack} />
+      <Stack.Screen name="HoldingsScreen" component={HoldingsScreen} />
+
+
+
     </Stack.Navigator>
   );
 }

@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LineChart } from 'react-native-chart-kit';
 import SecondCarousel from '../components/Homecarousel'
 import PortfolioValueChart from '../components/portfolio';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity } from 'react-native';
 
 const HomeScreen = () => {
   const [balance, setBalance] = useState(0);
   const [totalSharesValue, setTotalSharesValue] = useState(0);
   const [portfolioHistory, setPortfolioHistory] = useState([]);  
   const [isLoading, setIsLoading] = useState(true);
+  const navigation = useNavigation();
+  const [holdings, setHoldings] = useState([]);
+
 
 
   useEffect(() => {
@@ -74,19 +78,29 @@ const HomeScreen = () => {
       });
   
       let totalValue = 0;
+      let newHoldingsArray = [];
+
+
       for (const symbol in holdings) {
         if (holdings[symbol] > 0) {
-          const response = await fetch(`http://127.0.0.1:5000/stock_price?symbol=${symbol}`);
+          const response = await fetch(`https://sabateesh.pythonanywhere.com/stock_price?symbol=${symbol}`);
           const data = await response.json();
           totalValue += holdings[symbol] * data.price;
-        }
+
+          let holding = {
+            symbol: symbol,
+            name: symbol,
+            currentPrice: data.price,
+            priceChange: data.change, 
+            priceChangePercentage: data.changePercent, 
+            shares: holdings[symbol],
+          };
+          newHoldingsArray.push(holding);
+          }
       }
-
-      console.log(totalSharesValue);
-      
-
-  
+      console.log(`Total Portfolio Value: $${(totalValue)}`);
       setTotalSharesValue(totalValue);
+      setHoldings(newHoldingsArray);
     } catch (error) {
       console.error('Error updating total shares value:', error);
     }
@@ -106,8 +120,8 @@ const HomeScreen = () => {
 
   const updatePortfolioHistory = async () => {
     try {
-      const currentDate = new Date().toISOString().split('T')[0];
-      const newEntry = { date: currentDate, value: balance + totalSharesValue };
+      const currentDateTime = new Date().toISOString();
+      const newEntry = { dateTime: currentDateTime, value: balance + totalSharesValue };
       const updatedHistory = [...portfolioHistory, newEntry];
       await AsyncStorage.setItem('portfolioHistory', JSON.stringify(updatedHistory));
       setPortfolioHistory(updatedHistory);
@@ -115,7 +129,7 @@ const HomeScreen = () => {
       console.error('Error updating portfolio history:', error);
     }
   };
-
+  
 
   return (
     <ScrollView style={styles.container1}>
@@ -124,8 +138,10 @@ const HomeScreen = () => {
       </View>
         <Text style={styles.HoldingText}>Holdings</Text>
         <View style={styles.holdContainer}>
-          <Text style={styles.balanceText}>Holdings</Text>
-          <Text style={styles.balance}>{`View all`}</Text>
+            <Text style={styles.balanceText}>Holdings</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('HoldingsScreen', { holdings })}>
+              <Text style={styles.balance}>{`View all`}</Text>
+            </TouchableOpacity>
         </View>
         <Text style={styles.accountsText}>Accounts</Text>
         <View style={styles.balanceContainer}>
@@ -152,10 +168,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FCFCFC'
   },
   container: {
-    flex: 1,
-    paddingTop: 30,
-    paddingHorizontal: 12,
-    backgroundColor: '#FCFCFC'
   },
   balanceContainer: {
     flexDirection: 'row',
