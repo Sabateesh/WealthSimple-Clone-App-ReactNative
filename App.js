@@ -166,15 +166,19 @@ function UserStack() {
 function AppStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {/*Commented out for testing purposes*/}
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="Main" component={MyTabs} />
+      <Stack.Screen
+        name="Main"
+        component={MyTabs}
+        options={{
+          gestureEnabled: false, // Disable swipe back gesture
+        }}
+      />
       <Stack.Screen name="UserStack" component={UserStack} />
     </Stack.Navigator>
   );
 }
-
 
 
 

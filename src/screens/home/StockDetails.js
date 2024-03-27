@@ -292,8 +292,6 @@ const StockDetails = ({ route }) => {
         <Text style={styles.currency}> USD</Text>
       </Text>
       <StockChart symbol={symbol} />
-      <Text style={styles.testLine}>5 Year Trend</Text>
-
       <View style={styles.table}>
         <View style={styles.column}>
           {firstHalf.map(([key, value]) => (

@@ -7,7 +7,7 @@ PODS:
     - ExpoModulesCore
   - EXFont (11.10.3):
     - ExpoModulesCore
-  - Expo (50.0.13):
+  - Expo (50.0.14):
     - ExpoModulesCore
   - ExpoBlur (12.9.2):
     - ExpoModulesCore
@@ -28,6 +28,11 @@ PODS:
     - ReactCommon/turbomodule/core
   - ExpoTaskbarBlur (1.0.11):
     - ExpoModulesCore
+  - EXSplashScreen (0.26.4):
+    - ExpoModulesCore
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - FBLazyVector (0.73.5)
   - FBReactNativeSpec (0.73.5):
     - RCT-Folly (= 2022.05.16.00)
@@ -1128,6 +1133,7 @@ DEPENDENCIES:
   - ExpoLocalAuthentication (from `../node_modules/expo-local-authentication/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoTaskbarBlur (from `../node_modules/expo-taskbar-blur/ios`)
+  - EXSplashScreen (from `../node_modules/expo-splash-screen/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/React/FBReactNativeSpec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
@@ -1220,6 +1226,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-core"
   ExpoTaskbarBlur:
     :path: "../node_modules/expo-taskbar-blur/ios"
+  EXSplashScreen:
+    :path: "../node_modules/expo-splash-screen/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   FBReactNativeSpec:
@@ -1338,7 +1346,7 @@ SPEC CHECKSUMS:
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   EXConstants: 988aa430ca0f76b43cd46b66e7fae3287f9cc2fc
   EXFont: f20669cb266ef48b004f1eb1f2b20db96cd1df9f
-  Expo: a7c9bd836cb7c86e699c2539a906c9ff873f19f8
+  Expo: e01a77c6fa4bc80a6d1bb949cda1d12d21044abd
   ExpoBlur: e832d874bd94afc0645daddbd3162ec1ce172080
   ExpoFileSystem: eecaf6796aed0f4dd20042dc2ca2cac6c4bc1185
   ExpoKeepAwake: 0f5cad99603a3268e50af9a6eb8b76d0d9ac956c
@@ -1346,6 +1354,7 @@ SPEC CHECKSUMS:
   ExpoLocalAuthentication: c55ffb179683efed04cb144fc80ccf26891f0cb4
   ExpoModulesCore: 61dc57c6e2a35f2f84baf488146db624e03af4cd
   ExpoTaskbarBlur: e40c0ebe6028317c72145df21b8e44d9185cccae
+  EXSplashScreen: 5538a51beec451bf1fcf5198e3062790e2534df3
   FBLazyVector: 56e0e498dbb513b96c40bac6284729ba4e62672d
   FBReactNativeSpec: 146c741a3f40361f6bc13a4ba284678cbedb5881
   fmt: ff9d55029c625d3757ed641535fd4a75fedc7ce9
