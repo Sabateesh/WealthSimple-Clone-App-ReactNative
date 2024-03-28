@@ -32,9 +32,14 @@ const StockDetails = ({ route }) => {
           }
         });
 
+        const companyInfoResponse = await fetch(`http://127.0.0.1:5000/company_info?symbol=${symbol}`);
+        const companyInfo = await companyInfoResponse.json();
+  
+
         setStockData({
           ...data,
-          quote: filteredQuote
+          quote: filteredQuote,
+          companyName: companyInfo.name
         });
       } catch (error) {
         console.error('Error fetching stock data:', error);
@@ -42,6 +47,7 @@ const StockDetails = ({ route }) => {
         setLoading(false);
       }
     };
+
 
     const fetchBalance = async () => {
       try {
@@ -285,7 +291,7 @@ const StockDetails = ({ route }) => {
 
       <View style={styles.header}>
         <LogoFetcher tickerSymbol={symbol} />
-        <Text style={styles.title}>{symbol}</Text>
+        <Text style={styles.title}>{stockData.companyName}</Text>
       </View>
       <Text style={styles.price}>
         {stockData.price ? `$${stockData.price.toFixed(2)}` : 'N/A'}

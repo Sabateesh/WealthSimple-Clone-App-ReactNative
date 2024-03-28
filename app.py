@@ -1,7 +1,9 @@
 import pandas as pd
 
-from yahoo_fin.stock_info import get_live_price, get_quote_table, get_data, get_quote_data, get_day_gainers, get_day_losers, get_day_most_active
+from yahoo_fin.stock_info import get_live_price, get_quote_table, get_data, get_quote_data, get_day_gainers, get_day_losers, get_day_most_active, get_company_info
 from yahoo_fin import news
+from yahoo_fin import stock_info as si
+
 
 
 import os
@@ -19,13 +21,6 @@ from requests_html import HTMLSession
 from datetime import datetime
 
 
-secret_key = os.urandom(16)
-print(secret_key)
-
-
-
-# Set up logging
-logging.basicConfig(level=logging.DEBUG, filename='app.log', filemode='a', format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Flask app setup
 app = Flask(__name__)
@@ -131,7 +126,6 @@ def get_logo():
         return jsonify({'error': str(e)}), 500
 
 
-
 @app.route('/stock_price', methods=['GET'])
 def get_stock_price():
     stock_symbol = request.args.get('symbol')
@@ -148,6 +142,9 @@ def get_stock_price():
 
     except Exception as e:
         return jsonify({'error': f'Error fetching data for {stock_symbol}: {str(e)}'}), 500
+
+
+
 
 @app.route('/stock_history', methods=['GET'])
 def get_stock_history():
@@ -166,18 +163,16 @@ def get_stock_history():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+
 @app.route('/stock_info', methods=['GET'])
 def get_stock_info():
     stock_symbol = request.args.get('symbol')
-
     if not stock_symbol:
         return jsonify({'error': 'No stock symbol provided'}), 400
-
     try:
         price = get_live_price(stock_symbol.upper())
         quote_data = get_quote_data(stock_symbol.upper())
         currency = quote_data.get('currency', 'USD')
-
         return jsonify({
             'symbol': stock_symbol,
             'price': price,
@@ -269,6 +264,26 @@ def get_stock_news(ticker):
         return jsonify({'error': str(e)}), 500
 
 
+@app.route('/company_info', methods=['GET'])
+def get_company_info():
+    ticker_symbol = request.args.get('symbol')
+    if not ticker_symbol:
+        return jsonify({'error': 'Ticker symbol is required'}), 400
+
+    api_key = 'IH54C6QtdA2J78bQVEymjX8jyQnDUPCu'
+    url = f'https://financialmodelingprep.com/api/v3/search?query={ticker_symbol}&limit=1&apikey={api_key}'
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        if data:
+            return jsonify(data[0]), 200 
+        else:
+            return jsonify({'error': 'No company information found'}), 404
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': str(e)}), 500
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001,debug=True)
+    app.run(host='0.0.0.0', port=5000,debug=True)

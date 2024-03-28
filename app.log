@@ -1,0 +1,122 @@
+2024-03-27 21:38:08,043 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.17.49.139:5001
+2024-03-27 21:38:08,043 - INFO - [33mPress CTRL+C to quit[0m
+2024-03-27 21:38:08,044 - INFO -  * Restarting with stat
+2024-03-27 21:38:08,602 - WARNING -  * Debugger is active!
+2024-03-27 21:38:08,611 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:39:05,799 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://172.17.49.139:5001
+2024-03-27 21:39:05,799 - INFO - [33mPress CTRL+C to quit[0m
+2024-03-27 21:39:05,799 - INFO -  * Restarting with stat
+2024-03-27 21:39:06,341 - WARNING -  * Debugger is active!
+2024-03-27 21:39:06,348 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:39:29,856 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:39:29,951 - INFO -  * Restarting with stat
+2024-03-27 21:39:30,636 - WARNING -  * Debugger is active!
+2024-03-27 21:39:30,642 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:40:04,936 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.17.49.139:5000
+2024-03-27 21:40:04,936 - INFO - [33mPress CTRL+C to quit[0m
+2024-03-27 21:40:04,937 - INFO -  * Restarting with stat
+2024-03-27 21:40:05,540 - WARNING -  * Debugger is active!
+2024-03-27 21:40:05,547 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:40:32,193 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:40:32,298 - INFO -  * Restarting with stat
+2024-03-27 21:40:32,956 - WARNING -  * Debugger is active!
+2024-03-27 21:40:32,963 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:40:43,857 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.17.49.139:5000
+2024-03-27 21:40:43,857 - INFO - [33mPress CTRL+C to quit[0m
+2024-03-27 21:40:43,857 - INFO -  * Restarting with stat
+2024-03-27 21:40:44,495 - WARNING -  * Debugger is active!
+2024-03-27 21:40:44,502 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:40:51,785 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:40:51,885 - DEBUG - https://finance.yahoo.com:443 "GET /cryptocurrencies?offset=0&count=1 HTTP/1.1" 301 315
+2024-03-27 21:40:52,784 - DEBUG - https://finance.yahoo.com:443 "GET /crypto/ HTTP/1.1" 200 None
+2024-03-27 21:40:53,009 - INFO - 127.0.0.1 - - [27/Mar/2024 21:40:53] "GET /top_cryptos HTTP/1.1" 200 -
+2024-03-27 21:40:53,057 - INFO - 127.0.0.1 - - [27/Mar/2024 21:40:53] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+2024-03-27 21:41:33,446 - INFO - 127.0.0.1 - - [27/Mar/2024 21:41:33] "[31m[1mGET /get_company_info?symbol=AAPL HTTP/1.1[0m" 400 -
+2024-03-27 21:42:26,066 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:42:26,783 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:42:26,950 - INFO - 127.0.0.1 - - [27/Mar/2024 21:42:26] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:42:47,440 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:42:47,539 - INFO -  * Restarting with stat
+2024-03-27 21:42:48,137 - WARNING -  * Debugger is active!
+2024-03-27 21:42:48,144 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:42:59,067 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:42:59,711 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:42:59,876 - INFO - 127.0.0.1 - - [27/Mar/2024 21:42:59] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:43:07,393 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:43:07,493 - INFO -  * Restarting with stat
+2024-03-27 21:43:08,103 - WARNING -  * Debugger is active!
+2024-03-27 21:43:08,109 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:44:27,871 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:44:27,980 - INFO -  * Restarting with stat
+2024-03-27 21:44:28,606 - WARNING -  * Debugger is active!
+2024-03-27 21:44:28,612 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:47:22,002 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:47:22,108 - INFO -  * Restarting with stat
+2024-03-27 21:47:22,781 - WARNING -  * Debugger is active!
+2024-03-27 21:47:22,787 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:47:25,139 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:47:25,742 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:47:25,886 - INFO - 127.0.0.1 - - [27/Mar/2024 21:47:25] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:49:41,784 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:49:41,880 - INFO -  * Restarting with stat
+2024-03-27 21:49:42,536 - WARNING -  * Debugger is active!
+2024-03-27 21:49:42,541 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:49:46,375 - INFO - 127.0.0.1 - - [27/Mar/2024 21:49:46] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:51:07,783 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:51:07,888 - INFO -  * Restarting with stat
+2024-03-27 21:52:08,258 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.17.49.139:5000
+2024-03-27 21:52:08,258 - INFO - [33mPress CTRL+C to quit[0m
+2024-03-27 21:52:08,259 - INFO -  * Restarting with stat
+2024-03-27 21:52:08,883 - WARNING -  * Debugger is active!
+2024-03-27 21:52:08,889 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:52:12,098 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:52:12,638 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:52:12,805 - INFO - 127.0.0.1 - - [27/Mar/2024 21:52:12] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:54:02,220 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:54:02,329 - INFO -  * Restarting with stat
+2024-03-27 21:54:03,062 - WARNING -  * Debugger is active!
+2024-03-27 21:54:03,070 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:54:08,455 - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://172.17.49.139:5000
+2024-03-27 21:54:08,455 - INFO - [33mPress CTRL+C to quit[0m
+2024-03-27 21:54:08,456 - INFO -  * Restarting with stat
+2024-03-27 21:54:09,021 - WARNING -  * Debugger is active!
+2024-03-27 21:54:09,027 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:54:12,513 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:54:13,091 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:54:13,261 - INFO - 127.0.0.1 - - [27/Mar/2024 21:54:13] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:54:14,894 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:54:15,391 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:54:15,536 - INFO - 127.0.0.1 - - [27/Mar/2024 21:54:15] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:55:38,735 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:55:39,257 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:55:39,418 - INFO - 127.0.0.1 - - [27/Mar/2024 21:55:39] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:55:58,108 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:55:58,744 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:55:58,899 - INFO - 127.0.0.1 - - [27/Mar/2024 21:55:58] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 21:57:48,519 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 21:57:48,625 - INFO -  * Restarting with stat
+2024-03-27 21:57:49,388 - WARNING -  * Debugger is active!
+2024-03-27 21:57:49,394 - INFO -  * Debugger PIN: 763-290-956
+2024-03-27 21:57:55,180 - DEBUG - Starting new HTTPS connection (1): finance.yahoo.com:443
+2024-03-27 21:57:55,776 - DEBUG - https://finance.yahoo.com:443 "GET /quote/AAPL/profile?p=AAPL HTTP/1.1" 200 None
+2024-03-27 21:57:55,925 - INFO - 127.0.0.1 - - [27/Mar/2024 21:57:55] "[35m[1mGET /get_company_info?ticker=AAPL HTTP/1.1[0m" 500 -
+2024-03-27 22:01:07,844 - INFO -  * Detected change in '/Users/sabateeshsivakumar/Desktop/WSCLONE/WealthSimple-Clone-App-ReactNative/app.py', reloading
+2024-03-27 22:01:07,952 - INFO -  * Restarting with stat
