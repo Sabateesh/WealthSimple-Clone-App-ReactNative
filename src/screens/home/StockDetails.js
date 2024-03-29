@@ -6,6 +6,7 @@ import LogoFetcher from '../components/logofetch';
 import Dialog from 'react-native-dialog';
 import StockChart from '../components/stockchart';
 import StockNews from '../components/StockNews';
+import HoldingsCard from '../components/holdingscard';
 
 const StockDetails = ({ route }) => {
   const { symbol } = route.params;
@@ -15,6 +16,10 @@ const StockDetails = ({ route }) => {
   const [balance, setBalance] = useState(0);
   const [dialogVisible, setDialogVisible] = useState(false);
   const [numberOfShares, setNumberOfShares] = useState('');
+  const [sharesOwned, setSharesOwned] = useState(0);
+  const [currentPrice, setCurrentPrice] = useState(0);
+  const [priceBought, setPriceBought] = useState(0);
+
 
   useEffect(() => {
     const fetchStockData = async () => {
@@ -39,7 +44,8 @@ const StockDetails = ({ route }) => {
         setStockData({
           ...data,
           quote: filteredQuote,
-          companyName: companyInfo.name
+          companyName: companyInfo.name,
+          currency: companyInfo.currency
         });
       } catch (error) {
         console.error('Error fetching stock data:', error);
@@ -47,6 +53,29 @@ const StockDetails = ({ route }) => {
         setLoading(false);
       }
     };
+
+    const fetchHoldingsData = async () => {
+      try {
+        const holdingsData = await AsyncStorage.getItem('holdings');
+        console.log('Fetched Holdings:', holdingsData);
+        if (holdingsData) {
+          const holdings = JSON.parse(holdingsData);
+          const stockData = holdings.find((item) => item.symbol === symbol);
+          if (stockData) {
+            setSharesOwned(stockData.shares);
+            setPriceBought(stockData.priceBought);
+          }
+          holdings.forEach(holding => {
+            console.log(`Symbol: ${holding.symbol}, Price Bought: $${holding.priceBought}`);
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching holdings data:', error);
+      }
+    };
+    
+  
+
 
 
     const fetchBalance = async () => {
@@ -62,6 +91,7 @@ const StockDetails = ({ route }) => {
 
     fetchStockData();
     fetchBalance();
+    fetchHoldingsData();
 
   }, [symbol]);
   const handleBuy = async () => {
@@ -105,9 +135,10 @@ const StockDetails = ({ route }) => {
                       date: new Date(),
                       quantity: numberOfShares,
                       totalCost: totalCost,
-                      action: 'Buy'
-
+                      action: 'Buy',
+                      priceBought: stockData.price 
                   };
+                  console.log(`Price Bought: $${purchase.priceBought}`);
 
                   try {
                       const portfolio = await AsyncStorage.getItem('portfolio');
@@ -295,9 +326,11 @@ const StockDetails = ({ route }) => {
       </View>
       <Text style={styles.price}>
         {stockData.price ? `$${stockData.price.toFixed(2)}` : 'N/A'}
-        <Text style={styles.currency}> USD</Text>
+        <Text style={styles.currency}>{stockData.currency}</Text>
       </Text>
-      <StockChart symbol={symbol} />
+      <View style={styles.chart}>
+        <StockChart symbol={symbol} />
+      </View>
       <View style={styles.table}>
         <View style={styles.column}>
           {firstHalf.map(([key, value]) => (
@@ -311,6 +344,13 @@ const StockDetails = ({ route }) => {
           ))}
         </View>
       </View>
+      <Text style={styles.holdings}>Holdings</Text>
+      <HoldingsCard
+        symbol={symbol}
+        sharesOwned={sharesOwned}
+        currentPrice={stockData.price ? stockData.price.toFixed(2) : '0.00'}
+        priceBought={priceBought}
+      />
       <StockNews ticker={symbol} />
       <View style={styles.buttonContainer}>
       <CustomButton
@@ -371,6 +411,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: -40,
+    paddingLeft:10
   },
   scrollView: {
     paddingTop: 40,
@@ -381,14 +422,14 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingLeft: 5,
-    fontSize: 24,
-    fontWeight: "400",
+    fontSize: 21,
+    fontWeight: "600",
     color: '#808080'
   },
   price: {
-    paddingLeft: 5,
-    fontSize: 35,
-    marginVertical: 50,
+    paddingLeft: 10,
+    fontSize: 43,
+    marginVertical: 45,
     fontWeight: 'bold',
     color:'#312F2E'
   },
@@ -412,15 +453,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#FCFCFC',
   },
   divider: {
-    width: 1,
+    width: 0,
     backgroundColor: '#000000',
     marginHorizontal: 10,
   },
   quoteText: {
-    fontSize: 16,
+    paddingTop:20,
+    fontSize: 18,
     marginVertical: 5,
     backgroundColor: '#FCFCFC',
+    fontWeight:'600',
+    color:'#393737',
   },
+  chart:{
+    marginTop:-30
+  },
+  holdings:{
+    fontSize:20,
+    padding:10,
+    fontWeight:'600'
+  }
 });
 
 export default StockDetails;

@@ -19,10 +19,10 @@ const PortfolioValueChart = ({ portfolioHistory }) => {
 
   const validGraphPoints = graphPoints.filter(point => !isNaN(point.date));
 
-  console.log('validGraphPoints data:', validGraphPoints);
+  //console.log('validGraphPoints data:', validGraphPoints);
 
   if (validGraphPoints.length === 0) {
-    console.log('No valid graph points');
+    //console.log('No valid graph points');
     return <Text>No valid data available for the graph.</Text>;
   }
 

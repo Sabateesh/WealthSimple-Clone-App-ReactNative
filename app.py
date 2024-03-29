@@ -151,6 +151,7 @@ def get_stock_history():
     stock_symbol = request.args.get('symbol')
     end_date = datetime.now().strftime('%Y-%m-%d')
 
+
     if not stock_symbol:
         return jsonify({'error': 'No stock symbol provided'}), 400
 
@@ -284,6 +285,22 @@ def get_company_info():
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/company_search', methods=['GET'])
+def company_search():
+    query = request.args.get('query')
+    limit = request.args.get('limit', 20)
+    exchange = request.args.get('exchange', 'NASDAQ')
+
+    api_key = 'IH54C6QtdA2J78bQVEymjX8jyQnDUPCu'
+    url = f'https://financialmodelingprep.com/api/v3/search?query={query}&limit={limit}&exchange={exchange}&apikey={api_key}'
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+        return jsonify(data), 200
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000,debug=True)

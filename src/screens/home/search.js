@@ -1,57 +1,37 @@
-/*
-import React, { useState,useEffect } from 'react';
-import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity,Dimensions, BackHandler, ScrollView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Carousel from 'react-native-snap-carousel';
-import MarketMovers from '../components/Carosel';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import debounce from 'lodash.debounce';
 import ImageCarousel from '../components/imagecarrosel';
-import debounce from 'lodash.debounce'; // Import the debounce function from lodash
-
+import MarketMovers from '../components/Carosel';
 
 const SearchScreen = () => {
   const [query, setQuery] = useState('');
   const [stocks, setStocks] = useState([]);
-  const [isFocused, setIsFocused] = useState(false);
   const navigation = useNavigation();
 
-  const handleSearchFocus = () => {
-    setIsFocused(true);
-  };
-  const handleSearchBlur = () => {
-    setIsFocused(false);
-  };
-  
-  
   const handleSearch = async (searchQuery) => {
     if (searchQuery.trim() === '') {
       setStocks([]);
       return;
     }
     try {
-      const response = await fetch(`https://sabateesh.pythonanywhere.com/symbol_search?keywords=${searchQuery.trim()}`);
+      const response = await fetch(`http://127.0.0.1:5000/company_search?query=${searchQuery.trim()}`);
       const data = await response.json();
-      if (data.bestMatches) {
-        const formattedStocks = data.bestMatches.map(stock => ({
-          symbol: stock['1. symbol'],
-          name: stock['2. name'],
-        }));
-        setStocks(formattedStocks);
-      } else {
-        setStocks([]);
-      }
+      setStocks(data);
     } catch (error) {
       console.error('Error fetching stock symbols:', error);
       setStocks([]);
     }
   };
-  const debouncedSearch = debounce(handleSearch, 100);
+
+  const debouncedSearch = debounce(handleSearch, 900);
+
   useEffect(() => {
     debouncedSearch(query);
-    // Cleanup function to cancel the debounced call if the component unmounts
     return () => debouncedSearch.cancel();
   }, [query]);
-
 
   return (
     <View style={styles.container}>
@@ -65,47 +45,42 @@ const SearchScreen = () => {
             value={query}
             placeholder="Search"
             returnKeyType="search"
-            onFocus={handleSearchFocus}
-            onBlur={handleSearchBlur}
-            onSubmitEditing={handleSearch}
           />
         </View>
       </View>
-          <FlatList
-            data={stocks}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={styles.stockItem}
-                onPress={() => navigation.navigate('StockDetails', { symbol: item.symbol })}
-              >
-                <Text style={styles.stockName}>{item.symbol}</Text>
-                <Text style={styles.stockPrice}>{item.name}</Text>
-              </TouchableOpacity>
-            )}            
-          />
-      {query.trim() === '' && (  
-        <>
-          <ScrollView style={styles.carouselContainer}>
-            <ImageCarousel />
-            <MarketMovers />
-          </ScrollView>
-        </>
+      <FlatList
+        data={stocks}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            style={styles.stockItem}
+            onPress={() => navigation.navigate('StockDetails', { symbol: item.symbol })}
+          >
+            <Text style={styles.stockName}>{item.symbol}</Text>
+            <Text style={styles.stockPrice}>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+      />
+      {query.trim() === '' && (
+        <ScrollView style={styles.carouselContainer}>
+          <ImageCarousel />
+          <MarketMovers />
+        </ScrollView>
       )}
     </View>
-  );  
+  );
 };
 
 const styles = StyleSheet.create({
-  carouselContainer:{
-    paddingTop:5,
-    paddingLeft:-100,
+  carouselContainer: {
+    paddingTop: 5,
+    paddingLeft: -100,
   },
-  headercontainer:{
-    padding:10,
+  headercontainer: {
+    padding: 10,
   },
   container: {
-    backgroundColor:'#FCFCFC',
+    backgroundColor: '#FCFCFC',
     flex: 1,
     padding: -20,
     paddingTop: 85,
@@ -127,7 +102,7 @@ const styles = StyleSheet.create({
   title: {
     paddingLeft: 150,
     marginBottom: 10,
-    marginTop:-40,
+    marginTop: -40,
     fontSize: 16,
   },
   searchContainer: {
@@ -150,10 +125,9 @@ const styles = StyleSheet.create({
   },
 });
 
-
 export default SearchScreen;
 
-*/
+/*
 import React, { useState } from 'react';
 import { View, TextInput, FlatList, Text, StyleSheet, TouchableOpacity,Dimensions, BackHandler, ScrollView} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -296,3 +270,4 @@ const styles = StyleSheet.create({
 
 
 export default SearchScreen;
+*/

@@ -40,9 +40,8 @@ const ActivityScreen = () => {
         data={transactions}
         keyExtractor={(item, index) => `transaction-${index}`}
         renderItem={({ item }) => {
-          // Determine the sign and format the amount based on the action
           const sign = item.action === 'Buy' ? '-' : '+';
-          console.log('Action:', item.action, 'Sign:', sign); // Add this line for debugging
+          console.log('Action:', item.action, 'Sign:', sign); 
           const formattedAmount = (item.action === 'Buy' ? '-' : '+') + '$' + Math.abs(item.quantity * item.price).toFixed(2) + ' USD';
         
           return (
@@ -103,7 +102,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  // Add other styles as needed
 });
 
 export default ActivityScreen;

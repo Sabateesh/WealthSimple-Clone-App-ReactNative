@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import LogoFetcher from '../components/logofetch';
+import Icon from 'react-native-vector-icons/Feather';
+
 
 const HoldingsScreen = ({ route }) => {
   const { holdings } = route.params;
   const [updatedHoldings, setUpdatedHoldings] = useState([]);
+  const navigation = useNavigation();
 
 
 
@@ -48,6 +52,9 @@ const HoldingsScreen = ({ route }) => {
 
   return (
     <View style={styles.container}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconStyle}>
+            <Icon name="arrow-left" size={30} color="#000" />
+        </TouchableOpacity>
       <Text style={styles.title}>Holdings</Text>
       <FlatList
         data={updatedHoldings}
@@ -62,15 +69,15 @@ const HoldingsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50,
     backgroundColor: '#FCFCFC',
   },
   title: {
-    fontSize: 22,
-    fontWeight: '600',
+    fontSize: 24,
+    fontWeight: '700',
     color: '#312F2F',
     marginBottom: 10,
     paddingHorizontal: 15,
+    paddingTop:20
   },
   holdingItem: {
     flexDirection: 'row',
@@ -79,6 +86,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ccc',
     alignItems: 'center',
     justifyContent: 'space-between',
+
   },
   stockInfo: {
     flex: 1,
@@ -102,16 +110,14 @@ const styles = StyleSheet.create({
     color:'#312F2E',
     paddingBottom:5
   },
-  logo: {
-    // Style for the logo, if needed
-  },
-  list: {
-    // Any additional styling for the list, if needed
-  },
   companyName: {
     fontSize: 18,
     color: '#504C49',
-
+  },
+  iconStyle:{
+    paddingTop:70,
+    paddingLeft:10,
+    size:30,
   },
 });
 

@@ -24,6 +24,9 @@ const MarketMoversCarousel = () => {
         const responses = await Promise.all(urls.map(url => fetch(url)));
         const data = await Promise.all(responses.map(response => response.json()));
 
+        console.log('Raw API Responses:', data); // Log raw data
+
+
         const structuredData = [
           {
             title: 'Most Active Stocks 🔥',
@@ -51,6 +54,9 @@ const MarketMoversCarousel = () => {
             isCrypto: true,
           },
         ];
+
+        console.log('Structured Data:', structuredData); // Log structured data
+
         
         await AsyncStorage.setItem('marketMoversData', JSON.stringify({ data: structuredData, timestamp: Date.now() }));
         setMarketData(structuredData);
@@ -85,6 +91,10 @@ const MarketMoversCarousel = () => {
 
   const renderSlide = ({ item }) => {
     if (!item) {
+      return null;
+    }
+    if (!Array.isArray(item.data)) {
+      console.error('item.data is not an array:', item.data);
       return null;
     }
     return (

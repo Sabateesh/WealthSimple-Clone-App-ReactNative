@@ -58,53 +58,48 @@ const HomeScreen = () => {
     try {
       const storedPurchases = await AsyncStorage.getItem('purchases');
       const purchases = storedPurchases ? JSON.parse(storedPurchases) : [];
-      const storedSales = await AsyncStorage.getItem('sales');
-      const sales = storedSales ? JSON.parse(storedSales) : [];
       let holdings = {};
   
       purchases.forEach(purchase => {
         if (!holdings[purchase.symbol]) {
-          holdings[purchase.symbol] = 0;
+          holdings[purchase.symbol] = { shares: 0, priceBought: purchase.priceBought };
+        } else {
+          holdings[purchase.symbol].priceBought = ((holdings[purchase.symbol].priceBought * holdings[purchase.symbol].shares) + (purchase.priceBought * purchase.quantity)) / (holdings[purchase.symbol].shares + purchase.quantity);
         }
-        holdings[purchase.symbol] += parseInt(purchase.quantity);
-      });
-  
-      sales.forEach(sale => {
-        if (holdings[sale.symbol]) {
-          console.log(`Before sale: ${sale.symbol} holdings: ${holdings[sale.symbol]}, sale quantity: ${sale.quantity}`);
-          holdings[sale.symbol] -= Math.abs(parseInt(sale.quantity));
-          console.log(`After sale: ${sale.symbol} holdings: ${holdings[sale.symbol]}`);
-        }
+        holdings[purchase.symbol].shares += parseInt(purchase.quantity);
       });
   
       let totalValue = 0;
       let newHoldingsArray = [];
-
-
+  
       for (const symbol in holdings) {
-        if (holdings[symbol] > 0) {
+        if (holdings[symbol].shares > 0) {
           const response = await fetch(`https://sabateesh.pythonanywhere.com/stock_price?symbol=${symbol}`);
           const data = await response.json();
-          totalValue += holdings[symbol] * data.price;
-
+          totalValue += holdings[symbol].shares * data.price;
+  
           let holding = {
             symbol: symbol,
             name: symbol,
             currentPrice: data.price,
             priceChange: data.change, 
             priceChangePercentage: data.changePercent, 
-            shares: holdings[symbol],
+            shares: holdings[symbol].shares,
+            priceBought: holdings[symbol].priceBought
           };
           newHoldingsArray.push(holding);
-          }
+        }
       }
-      console.log(`Total Portfolio Value: $${(totalValue)}`);
+      console.log(`Total Portfolio Value: $${totalValue}`);
+      console.log('Updated Holdings:', newHoldingsArray);
+      await AsyncStorage.setItem('holdings', JSON.stringify(newHoldingsArray));
       setTotalSharesValue(totalValue);
       setHoldings(newHoldingsArray);
     } catch (error) {
       console.error('Error updating total shares value:', error);
     }
   };
+  
   
   
 
@@ -195,7 +190,8 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#312F2E',
     paddingTop:25,
-    paddingLeft:15   
+    paddingLeft:15,
+    paddingBottom:10   
   },
   addContainer: {
     alignItems: 'center',

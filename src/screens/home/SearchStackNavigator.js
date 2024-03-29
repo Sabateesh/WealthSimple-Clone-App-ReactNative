@@ -4,6 +4,7 @@ import SearchScreen from './search';
 import StockDetails from './StockDetails';
 import Icon from 'react-native-vector-icons/AntDesign';
 import Icon2 from 'react-native-vector-icons/Fontisto';
+import Icon3 from 'react-native-vector-icons/Feather';
 import { TouchableOpacity, View } from 'react-native';
 
 const Stack = createStackNavigator();
@@ -18,8 +19,15 @@ const SearchStackNavigator = () => {
         options={({ route }) => ({
           headerShown: true,
           title: route.params.symbol,
+          headerStyle: {
+            backgroundColor: '#FCFCFC',
+          },
+          headerBackImage: () => (
+            <Icon3 name="arrow-left" size={25} color="#000" style={{ marginLeft: 15 }} />
+          ),
+          headerBackTitleVisible: false,
           headerRight: () => (
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', color:'#000' }}>
               <TouchableOpacity  style={{ marginRight: 24 }} onPress={() => console.log('Star pressed')}>
                 <Icon name="staro" size={25} color="#000" />
               </TouchableOpacity>

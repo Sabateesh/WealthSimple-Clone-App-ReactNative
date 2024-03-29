@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, Button, StyleSheet } from 'react-native';
-import { LineGraph } from 'react-native-graph';
+import { LineGraph, onPointSelected } from 'react-native-graph';
 
 const StockChart = ({ symbol }) => {
   const [historicalData, setHistoricalData] = useState(null);
   const [selectedPoint, setSelectedPoint] = useState(null);
   const [filteredData, setFilteredData] = useState(null);
-  const [range, setRange] = useState('1y');
+  const [range, setRange] = useState('5y');
+  const [priceDifference, setPriceDifference] = useState(null);
 
   useEffect(() => {
     const fetchStockHistory = async () => {
@@ -33,6 +34,12 @@ const StockChart = ({ symbol }) => {
       const endDate = new Date();
       let startDate;
       switch (range) {
+        case '1w':
+          startDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate() - 7);
+          break;
+        case '1m':
+          startDate = new Date(endDate.getFullYear(), endDate.getMonth() - 1, endDate.getDate());
+          break;
         case '1y':
           startDate = new Date(endDate.getFullYear() - 1, endDate.getMonth(), endDate.getDate());
           break;
@@ -63,12 +70,38 @@ const StockChart = ({ symbol }) => {
       }
 
       setFilteredData(filtered);
+      if (filtered.length > 1) {
+        const startPrice = filtered[0].value;
+        const endPrice = filtered[filtered.length - 1].value;
+        const diff = endPrice - startPrice;
+        setPriceDifference(diff.toFixed(2));
+        setSelectedPoint(filtered[filtered.length - 1]);
+      } else {
+        setPriceDifference(null);
+        setSelectedPoint(null);
+      }
     }
   }, [range, historicalData]);
 
   const onPointSelected = (point) => {
     setSelectedPoint(point);
+    if (filteredData && point) {
+      const startPrice = filteredData[0].value;
+      const selectedPrice = point.value;
+      const diff = selectedPrice - startPrice;
+      setPriceDifference(diff.toFixed(2));
+    } else {
+      if (filteredData.length > 1) {
+        const startPrice = filteredData[0].value;
+        const endPrice = filteredData[filteredData.length - 1].value;
+        const diff = endPrice - startPrice;
+        setPriceDifference(diff.toFixed(2));
+      } else {
+        setPriceDifference(null);
+      }
+    }
   };
+  
 
   if (!filteredData) {
     return <ActivityIndicator />;
@@ -76,7 +109,6 @@ const StockChart = ({ symbol }) => {
 
   return (
     <View>
-
       {selectedPoint && (
         <View>
           <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#017560' }}>
@@ -85,22 +117,29 @@ const StockChart = ({ symbol }) => {
           <Text style={{ color: 'gray' }}>
             {selectedPoint.date.toDateString()}
           </Text>
+          {priceDifference && (
+            <Text style={{ color: priceDifference >= 0 ? 'green' : 'red' }}>
+              {priceDifference >= 0 ? `+ $${priceDifference}` : `- $${Math.abs(priceDifference)}`}
+            </Text>
+          )}
         </View>
       )}
       <LineGraph
-        style={{ width: '100%', height: 300 }}
+        style={{ width: '101%', height: 250 }}
         points={filteredData}
         animated={true}
-        color="#017560"
-        gradientFillColors={['#0175605D', '#7476df00']}
+        color="#7B9A53"
+        gradientFillColors={['#DBECC0', '#F7F9F2']}
         enablePanGesture
         onPointSelected={onPointSelected}
         enableIndicator
         indicatorPulsating
-        enableFadeInMask
-      />
+        enableFadeInMask  
 
+      />
       <View style={styles.buttonContainer}>
+        <Button style={styles.button} title="1w" onPress={() => setRange('1w')} />
+        <Button title="1m" onPress={() => setRange('1m')} />
         <Button title="3m" onPress={() => setRange('3m')} />
         <Button title="6m" onPress={() => setRange('6m')} />
         <Button title="1y" onPress={() => setRange('1y')} />
@@ -114,8 +153,16 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: '#FCFCFC',
     marginBottom: 10,
+    color:'#3F3E3D'
   },
+  button:{
+    color:'#3F3E3D',
+    backgroundColor: '#FCFCFC',
+
+  }
 });
 
 export default StockChart;
