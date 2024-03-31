@@ -7,6 +7,7 @@ import Dialog from 'react-native-dialog';
 import StockChart from '../components/stockchart';
 import StockNews from '../components/StockNews';
 import HoldingsCard from '../components/holdingscard';
+import CompanyInfo from '../components/company_infor';
 
 const StockDetails = ({ route }) => {
   const { symbol } = route.params;
@@ -19,6 +20,8 @@ const StockDetails = ({ route }) => {
   const [sharesOwned, setSharesOwned] = useState(0);
   const [currentPrice, setCurrentPrice] = useState(0);
   const [priceBought, setPriceBought] = useState(0);
+  const cleanedSymbol = symbol.replace('.TO', '');
+
 
 
   useEffect(() => {
@@ -321,7 +324,7 @@ const StockDetails = ({ route }) => {
       </Dialog.Container>
 
       <View style={styles.header}>
-        <LogoFetcher tickerSymbol={symbol} />
+        <LogoFetcher tickerSymbol={cleanedSymbol} />
         <Text style={styles.title}>{stockData.companyName}</Text>
       </View>
       <Text style={styles.price}>
@@ -366,6 +369,8 @@ const StockDetails = ({ route }) => {
         textStyle={styles.sellText}
       />
     </View>
+    <CompanyInfo symbol={cleanedSymbol} />
+
     </ScrollView>
   );
 };
@@ -459,10 +464,10 @@ const styles = StyleSheet.create({
   },
   quoteText: {
     paddingTop:20,
-    fontSize: 18,
+    fontSize: 16,
     marginVertical: 5,
     backgroundColor: '#FCFCFC',
-    fontWeight:'600',
+    fontWeight:'500',
     color:'#393737',
   },
   chart:{

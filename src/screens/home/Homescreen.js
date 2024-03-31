@@ -5,7 +5,7 @@ import SecondCarousel from '../components/Homecarousel'
 import PortfolioValueChart from '../components/portfolio';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-
+import SenateTradesCarousel from '../components/senate-trading';
 const HomeScreen = () => {
   const [balance, setBalance] = useState(0);
   const [totalSharesValue, setTotalSharesValue] = useState(0);
@@ -154,6 +154,7 @@ const HomeScreen = () => {
           <Text style={styles.moreText}>More</Text>
         </View>
         <SecondCarousel></SecondCarousel>
+        <SenateTradesCarousel></SenateTradesCarousel>
     </ScrollView>
   );
 };

@@ -19,6 +19,16 @@ import logging
 import os
 from requests_html import HTMLSession
 from datetime import datetime
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+
 
 
 
@@ -124,6 +134,22 @@ def get_logo():
             return jsonify({'error': f'Error fetching logo: {response.text}'}), response.status_code
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+@app.route('/logo2', methods=['GET'])
+def get_logo2():
+    ticker_symbol = request.args.get('ticker')
+    api_key = 'IH54C6QtdA2J78bQVEymjX8jyQnDUPCu'
+
+    if not ticker_symbol:
+        return jsonify({'error': 'Ticker symbol is required'}), 400
+    
+    logo_url = f'https://financialmodelingprep.com/image-stock/{ticker_symbol}.png?apikey={api_key}'
+    return jsonify({'logo_url': logo_url}), 200
+
+
+
+
+
 
 
 @app.route('/stock_price', methods=['GET'])
@@ -289,7 +315,9 @@ def get_company_info():
 def company_search():
     query = request.args.get('query')
     limit = request.args.get('limit', 20)
-    exchange = request.args.get('exchange', 'NASDAQ')
+    
+    # Check if the query ends with '.TO', if so, set the exchange to 'TSX'
+    exchange = 'TSX' if query.upper().endswith('.TO') else 'NASDAQ'
 
     api_key = 'IH54C6QtdA2J78bQVEymjX8jyQnDUPCu'
     url = f'https://financialmodelingprep.com/api/v3/search?query={query}&limit={limit}&exchange={exchange}&apikey={api_key}'
@@ -301,6 +329,139 @@ def company_search():
         return jsonify(data), 200
     except requests.exceptions.RequestException as e:
         return jsonify({'error': str(e)}), 500
+
+
+@app.route('/company-profile/<symbol>', methods=['GET'])
+def get_company_profile(symbol):
+    api_key = 'IH54C6QtdA2J78bQVEymjX8jyQnDUPCu'
+    if not api_key:
+        return jsonify({"error": "API key is required"}), 400
+    
+    api_url = f"https://financialmodelingprep.com/api/v3/profile/{symbol}?apikey={api_key}"
+    response = requests.get(api_url)
+    
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to fetch company profile"}), response.status_code
+
+@app.route('/trades/nancy-pelosi', methods=['GET'])
+def get_nancy_pelosi_trades():
+    options = Options()
+    options.add_argument('--headless')
+    #driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="123.0.6312.87").install()),options=options)
+    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-arm64/chromedriver')
+    driver = webdriver.Chrome(service=service, options=options)
+    url = "https://www.quiverquant.com/congresstrading/politician/Nancy%20Pelosi-P000197"
+    driver.get(url)
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'table tr')))
+
+    trades = []
+    rows = driver.find_elements(By.CSS_SELECTOR, 'table tr')
+    for row in rows:
+        cells = row.find_elements(By.TAG_NAME, 'td')
+        if len(cells) >= 5:
+            stock_info = cells[0].text.strip().split('\n')
+            transaction_info = cells[1].text.strip().split('\n')
+        
+            stock = stock_info[0] if len(stock_info) > 0 else None
+            stock_detail = stock_info[1] if len(stock_info) > 1 else None
+            transaction = transaction_info[0] if len(transaction_info) > 0 else None
+            transaction_amount = transaction_info[1] if len(transaction_info) > 1 else None
+        
+            trade = {
+                'stock': stock,
+                'stock_detail': stock_detail,  
+                'transaction': transaction,
+                'transaction_amount': transaction_amount,
+                'filed': cells[2].text.strip(),
+                'traded': cells[3].text.strip(),
+                'description': cells[4].text.strip()
+            }
+            trades.append(trade)
+
+    driver.quit()
+    return jsonify(trades)
+
+@app.route('/trades/tommy-tuberville', methods=['GET'])
+def get_tommy_tuberville_trades():
+    options = Options()
+    options.add_argument('--headless')
+    #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-arm64/chromedriver')
+    driver = webdriver.Chrome(service=service, options=options)
+    url = "https://www.quiverquant.com/congresstrading/politician/Tommy%20Tuberville-T000278"
+    driver.get(url)
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'table tr')))
+
+    trades = []
+    rows = driver.find_elements(By.CSS_SELECTOR, 'table tr')
+    for row in rows:
+        cells = row.find_elements(By.TAG_NAME, 'td')
+        if len(cells) >= 5:
+            stock_info = cells[0].text.strip().split('\n')
+            transaction_info = cells[1].text.strip().split('\n')
+        
+            stock = stock_info[0] if len(stock_info) > 0 else None
+            stock_detail = stock_info[1] if len(stock_info) > 1 else None
+            transaction = transaction_info[0] if len(transaction_info) > 0 else None
+            transaction_amount = transaction_info[1] if len(transaction_info) > 1 else None
+        
+            trade = {
+                'stock': stock,
+                'stock_detail': stock_detail,  
+                'transaction': transaction,
+                'transaction_amount': transaction_amount,
+                'filed': cells[2].text.strip(),
+                'traded': cells[3].text.strip(),
+                'description': cells[4].text.strip()
+            }
+            trades.append(trade)
+
+    driver.quit()
+    return jsonify(trades)
+
+@app.route('/trades/josh-gottheimer', methods=['GET'])
+def get_josh_gottheimer_trades():
+    options = Options()
+    options.add_argument('--headless')
+    #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-arm64/chromedriver')
+    driver = webdriver.Chrome(service=service, options=options)
+    url = "https://www.quiverquant.com/congresstrading/politician/Josh%20Gottheimer-G000583"
+    driver.get(url)
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, 'table tr')))
+
+    trades = []
+    rows = driver.find_elements(By.CSS_SELECTOR, 'table tr')
+    for row in rows:
+        cells = row.find_elements(By.TAG_NAME, 'td')
+        if len(cells) >= 5:
+            stock_info = cells[0].text.strip().split('\n')
+            transaction_info = cells[1].text.strip().split('\n')
+        
+            stock = stock_info[0] if len(stock_info) > 0 else None
+            stock_detail = stock_info[1] if len(stock_info) > 1 else None
+            transaction = transaction_info[0] if len(transaction_info) > 0 else None
+            transaction_amount = transaction_info[1] if len(transaction_info) > 1 else None
+        
+            trade = {
+                'stock': stock,
+                'stock_detail': stock_detail,  
+                'transaction': transaction,
+                'transaction_amount': transaction_amount,
+                'filed': cells[2].text.strip(),
+                'traded': cells[3].text.strip(),
+                'description': cells[4].text.strip()
+            }
+            trades.append(trade)
+
+    driver.quit()
+    return jsonify(trades)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000,debug=True)
