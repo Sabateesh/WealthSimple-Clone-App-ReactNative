@@ -115,14 +115,16 @@ const MarketMoversCarousel = () => {
               </View>
             </View>
             <View style={styles.stockRight}>
-              <Text style={styles.price}>${stock['Price (Intraday)'].toFixed(2)}</Text>
+              <Text style={styles.price}>
+                {stock['Price (Intraday)'] ? `$${stock['Price (Intraday)']}` : 'N/A'}
+              </Text>
               <Text
                 style={[
                   styles.change,
                   { color: stock['% Change'] > 0 ? 'green' : 'red' },
                 ]}
               >
-                ({stock['% Change'].toFixed(2)}%)
+                {stock['% Change'] ? `(${stock['% Change']}%)` : 'N/A'}
               </Text>
             </View>
           </View>
@@ -130,6 +132,7 @@ const MarketMoversCarousel = () => {
       </View>
     );
   };
+  
   
 
   return (

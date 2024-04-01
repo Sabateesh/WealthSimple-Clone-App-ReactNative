@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity,Image } from 'react-native';
 import Carousel from 'react-native-snap-carousel';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import nancyPelosiImage from '../../assets/nancy.png'
+import tommyTubervilleImage from '../../assets/tommy.png'
+import joshGottheimerImage from '../../assets/josh.png'
 const SenateTradesCarousel = () => {
   const [tradesData, setTradesData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,10 +25,12 @@ const SenateTradesCarousel = () => {
         const data = await Promise.all(responses.map(response => response.json()));
 
         const structuredData = data.map((trades, index) => ({
-          title: `Trades by ${['Nancy Pelosi', 'Tommy Tuberville', 'Josh Gottheimer'][index]}`,
-          description: 'Recent stock transactions',
-          data: trades,
-        }));
+            title: `Trades by ${['Nancy Pelosi', 'Tommy Tuberville', 'Josh Gottheimer'][index]}`,
+            description: 'Recent stock transactions',
+            data: trades,
+            image: [nancyPelosiImage, tommyTubervilleImage, joshGottheimerImage][index], // Use the imported images
+          }));
+          
 
         await AsyncStorage.setItem('senateTradesData', JSON.stringify({ data: structuredData, timestamp: Date.now() }));
         setTradesData(structuredData);
@@ -65,51 +69,36 @@ const SenateTradesCarousel = () => {
     }
     return (
       <View style={styles.slide}>
+       <View style={styles.headerContainer}>
+        <Image source={item.image} style={styles.congressmanImage} />
         <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.description}>{item.description}</Text>
-
+        </View>  
         {item.data.map((trade, index) => (
           <View key={index} style={styles.tradeContainer}>
-            <Text style={styles.stock}>{trade.stock}</Text>
-            <Text style={styles.transaction}>{trade.transaction}</Text>
-            <Text style={styles.amount}>{trade.transaction_amount}</Text>
-            <Text style={styles.date}>{trade.traded}</Text>
+            <View style={styles.leftContainer}>
+            <Text style={styles.stock}>
+                {trade.stock !== "-" ? trade.stock : trade.stock_detail}
+              </Text>
+              <Text style={styles.transaction}>{trade.transaction}</Text>
+            </View>
+            <View style={styles.rightContainer}>
+                <Text style={styles.amount}>{trade.transaction_amount.split('-').pop().trim()}</Text>
+                <Text style={styles.date}>{trade.traded}</Text>
+            </View>
           </View>
         ))}
       </View>
     );
   };
-
+  
+  
+  
   return (
     <View style={{ paddingTop: 25 }}>
       {loading ? (
         <Text>Loading...</Text>
       ) : (
         <>
-          <View style={styles.buttonContainer}>
-            {tradesData.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  styles.button,
-                  { backgroundColor: index === activeIndex ? '#312F2E' : '#FBFBFB' },
-                ]}
-                onPress={() => {
-                  carouselRef.current.snapToItem(index);
-                  setActiveIndex(index);
-                }}
-              >
-                <Text
-                  style={[
-                    styles.buttonText,
-                    { color: index === activeIndex ? '#FCFCFB' : '#312F2E' },
-                  ]}
-                >
-                  {['Nancy Pelosi', 'Tommy Tuberville', 'Josh Gottheimer'][index]}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
           <Carousel
             ref={carouselRef}
             data={tradesData}
@@ -133,7 +122,7 @@ const styles = StyleSheet.create({
     paddingBottom: 70,
     justifyContent: 'center',
     alignItems: 'flex-start',
-    paddingRight: 115,
+    paddingRight: 15,
     borderWidth: 0.5,
     borderColor: '#DEDCDB',
   },
@@ -147,12 +136,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: '#63615E',
     paddingBottom: 10,
-  },
-  tradeContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingBottom: 20,
+    paddingLeft:50
   },
   stock: {
     fontSize: 16,
@@ -183,6 +167,31 @@ const styles = StyleSheet.create({
     fontSize: 22,
     color: '#FCFCFC',
     fontWeight: '700',
+  },
+  tradeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: 20,
+  },
+  leftContainer: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  rightContainer: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingBottom:20
+  },
+  congressmanImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 10,
   },
 });
 

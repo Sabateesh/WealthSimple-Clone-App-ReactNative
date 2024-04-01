@@ -9,7 +9,6 @@ from yahoo_fin import stock_info as si
 import os
 
 
-
 import requests
 from flask import Flask, jsonify, request, redirect, url_for, render_template
 from flask_login import LoginManager, UserMixin, login_required
@@ -220,11 +219,30 @@ def day_gainers():
 @app.route('/day_losers', methods=['GET'])
 def day_losers():
     try:
-        losers = get_day_losers().head(3)
-        data = losers[['Symbol','Name', 'Price (Intraday)', '% Change']].to_dict(orient='records')
+        url = 'https://finance.yahoo.com/losers/'
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'lxml')
+
+        # Find the table containing the losers data
+        table = soup.find('table', {'class': 'W(100%)'})
+
+        # Extract the data for the top 3 losers
+        rows = table.find_all('tr')[1:4]  # Skip the header row and get the next 3 rows
+        data = []
+        for row in rows:
+            cols = row.find_all('td')
+            data.append({
+                'Symbol': cols[0].text.strip(),
+                'Name': cols[1].text.strip(),
+                'Price (Intraday)': cols[2].text.strip(),
+                '% Change': cols[4].text.strip(),
+            })
+
         return jsonify(data), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    
+
 
 @app.route('/most_active', methods=['GET'])
 def most_active():
@@ -382,7 +400,7 @@ def get_nancy_pelosi_trades():
             trades.append(trade)
 
     driver.quit()
-    return jsonify(trades)
+    return jsonify(trades[:4])
 
 @app.route('/trades/tommy-tuberville', methods=['GET'])
 def get_tommy_tuberville_trades():
@@ -421,7 +439,7 @@ def get_tommy_tuberville_trades():
             trades.append(trade)
 
     driver.quit()
-    return jsonify(trades)
+    return jsonify(trades[:4])
 
 @app.route('/trades/josh-gottheimer', methods=['GET'])
 def get_josh_gottheimer_trades():
@@ -460,7 +478,7 @@ def get_josh_gottheimer_trades():
             trades.append(trade)
 
     driver.quit()
-    return jsonify(trades)
+    return jsonify(trades[:4])
 
 
 if __name__ == '__main__':
