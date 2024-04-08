@@ -16,7 +16,7 @@ const SearchStackNavigator = () => {
       <Stack.Screen
         name="StockDetails"
         component={StockDetails}
-        options={({ route }) => ({
+        options={({ route, navigation }) => ({
           headerShown: true,
           title: route.params.symbol,
           headerStyle: {
@@ -27,9 +27,19 @@ const SearchStackNavigator = () => {
           ),
           headerBackTitleVisible: false,
           headerRight: () => (
-            <View style={{ flexDirection: 'row', color:'#000' }}>
-              <TouchableOpacity  style={{ marginRight: 24 }} onPress={() => console.log('Star pressed')}>
-                <Icon name="staro" size={25} color="#000" />
+            <View style={{ flexDirection: 'row', color: '#000' }}>
+              <TouchableOpacity
+                style={{ marginRight: 24 }}
+                onPress={() => {
+                  route.params.handleFavorite();
+                  navigation.setParams({ isFavorited: !route.params.isFavorited });
+                }}
+              >
+                <Icon
+                  name={route.params.isFavorited ? 'star' : 'staro'}
+                  size={25}
+                  color="#000"
+                />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => console.log('Bell pressed')} style={{ marginRight: 15 }}>
                 <Icon2 name="bell" size={25} color="#000" />

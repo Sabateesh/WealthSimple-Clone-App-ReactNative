@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Dimensions, Button, Alert,TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, ScrollView, Dimensions, Button, Alert,TouchableOpacity,navigation } from 'react-native';
 import { LineChart } from 'react-native-chart-kit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LogoFetcher from '../components/logofetch';
@@ -8,8 +8,11 @@ import StockChart from '../components/stockchart';
 import StockNews from '../components/StockNews';
 import HoldingsCard from '../components/holdingscard';
 import CompanyInfo from '../components/company_infor';
+import { useNavigation } from '@react-navigation/native';
+
 
 const StockDetails = ({ route }) => {
+  const navigation = useNavigation();
   const { symbol } = route.params;
   const [stockData, setStockData] = useState(null);
   const [historicalData, setHistoricalData] = useState(null);
@@ -21,7 +24,27 @@ const StockDetails = ({ route }) => {
   const [currentPrice, setCurrentPrice] = useState(0);
   const [priceBought, setPriceBought] = useState(0);
   const cleanedSymbol = symbol.replace('.TO', '');
+  const [isFavorited, setIsFavorited] = useState(false);
 
+  const handleFavorite = async () => {
+    try {
+      const favorites = await AsyncStorage.getItem('favorites');
+      let favoritesArray = favorites ? JSON.parse(favorites) : [];
+
+      if (favoritesArray.includes(symbol)) {
+        favoritesArray = favoritesArray.filter(item => item !== symbol);
+        setIsFavorited(false);
+      } else {
+        favoritesArray.push(symbol);
+        setIsFavorited(true);
+      }
+
+      await AsyncStorage.setItem('favorites', JSON.stringify(favoritesArray));
+      console.log('Updated Favorites:', favoritesArray);
+    } catch (error) {
+      console.error('Error updating favorites:', error);
+    }
+  };
 
 
   useEffect(() => {
@@ -77,6 +100,12 @@ const StockDetails = ({ route }) => {
       }
     };
     
+    const checkFavoriteStatus = async () => {
+      const favorites = await AsyncStorage.getItem('favorites');
+      const favoritesArray = favorites ? JSON.parse(favorites) : [];
+      setIsFavorited(favoritesArray.includes(symbol));
+    };
+    
   
 
 
@@ -89,14 +118,23 @@ const StockDetails = ({ route }) => {
         console.error('Error fetching balance:', error);
       }
     };
-  
 
+  
 
     fetchStockData();
     fetchBalance();
     fetchHoldingsData();
+    checkFavoriteStatus();
 
   }, [symbol]);
+
+
+  useEffect(() => {
+    navigation.setParams({ isFavorited, handleFavorite });
+  }, [isFavorited, navigation]);
+  
+
+
   const handleBuy = async () => {
     const now = new Date()
     const dayofweek = now.getDay();

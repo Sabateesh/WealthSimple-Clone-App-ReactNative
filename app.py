@@ -30,7 +30,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 
 
-
 # Flask app setup
 app = Flask(__name__)
 app.config['SECRET_KEY'] = b'\x10d\x7f\x99\xfa\x88\xe8\xe2B*\x86\xe9\x14\xc1\xa7\xbd'
@@ -368,7 +367,7 @@ def get_nancy_pelosi_trades():
     options = Options()
     options.add_argument('--headless')
     #driver = webdriver.Chrome(service=Service(ChromeDriverManager(version="123.0.6312.87").install()),options=options)
-    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-arm64/chromedriver')
+    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-x64/chromedriver')
     driver = webdriver.Chrome(service=service, options=options)
     url = "https://www.quiverquant.com/congresstrading/politician/Nancy%20Pelosi-P000197"
     driver.get(url)
@@ -407,7 +406,7 @@ def get_tommy_tuberville_trades():
     options = Options()
     options.add_argument('--headless')
     #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-arm64/chromedriver')
+    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-x64/chromedriver')
     driver = webdriver.Chrome(service=service, options=options)
     url = "https://www.quiverquant.com/congresstrading/politician/Tommy%20Tuberville-T000278"
     driver.get(url)
@@ -446,7 +445,7 @@ def get_josh_gottheimer_trades():
     options = Options()
     options.add_argument('--headless')
     #driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-arm64/chromedriver')
+    service = Service(executable_path='/Users/sabateeshsivakumar/Downloads/chromedriver-mac-x64/chromedriver')
     driver = webdriver.Chrome(service=service, options=options)
     url = "https://www.quiverquant.com/congresstrading/politician/Josh%20Gottheimer-G000583"
     driver.get(url)

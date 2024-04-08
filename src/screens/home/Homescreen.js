@@ -6,6 +6,7 @@ import PortfolioValueChart from '../components/portfolio';
 import { useNavigation } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import SenateTradesCarousel from '../components/senate-trading';
+import FavoriteStockCard from '../components/favourites';
 const HomeScreen = () => {
   const [balance, setBalance] = useState(0);
   const [totalSharesValue, setTotalSharesValue] = useState(0);
@@ -13,6 +14,8 @@ const HomeScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigation = useNavigation();
   const [holdings, setHoldings] = useState([]);
+  const [favorites, setFavorites] = useState([]);
+
 
 
 
@@ -29,7 +32,41 @@ const HomeScreen = () => {
         console.error('Error fetching data:', error);
       }
     };
+    const fetchFavoritesDetails = async () => {
+      try {
+        const favoritesData = await AsyncStorage.getItem('favorites');
+        const favoritesArray = favoritesData ? JSON.parse(favoritesData) : [];
 
+
+        const favoritesDetails = await Promise.all(favoritesArray.map(async (tickerSymbol) => {
+          const cleanTickerSymbol = tickerSymbol.replace('.TO', '');
+          const stockPriceResponse = await fetch(`https://sabateesh.pythonanywhere.com/stock_price?symbol=${tickerSymbol}`);
+          const stockPriceData = await stockPriceResponse.json();
+        
+  
+          const logoResponse = await fetch(`https://sabateesh.pythonanywhere.com/logo?ticker=${cleanTickerSymbol}`);
+          const logoDataArray = await logoResponse.json();
+
+          const companyInfoResponse = await fetch(`http://127.0.0.1:5000/company_info?symbol=${tickerSymbol}`);
+          const companyInfoData = await companyInfoResponse.json();
+          const percentageChange = ((stockPriceData.price - stockPriceData.quote.Open) / stockPriceData.quote.Open) * 100;
+
+          return {
+            ticker: tickerSymbol,
+            company: companyInfoData.name,
+            currentPrice: stockPriceData.price.toFixed(2),
+            currency: companyInfoData.currency,
+            percentageChange: percentageChange.toFixed(2),
+            logoUri: logoDataArray.length > 0 ? logoDataArray[0].image : 'path_to_default_logo_image'
+          };
+        }));
+        setFavorites(favoritesDetails);
+      } catch (error) {
+        console.error('Error fetching favorite stocks details:', error);
+      }
+    };
+  
+    fetchFavoritesDetails();
     fetchData();
     const interval = setInterval(() => {
       updateTotalSharesValue();
@@ -44,6 +81,10 @@ const HomeScreen = () => {
       clearInterval(dailyInterval);
     };
   }, []);
+  useEffect(() => {
+    console.log('Favoritesww:', favorites);
+  }, [favorites]);
+  
 
   const updateBalance = async () => {
     try {
@@ -154,6 +195,29 @@ const HomeScreen = () => {
           <Text style={styles.moreText}>More</Text>
         </View>
         <SecondCarousel></SecondCarousel>
+        <Text style={styles.watchlistText}>My Watchlist</Text>
+      <ScrollView
+        horizontal={true}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.favoritesContainer}
+      >
+        {favorites.length > 0 ? (
+          favorites.map((favorite, index) => (
+            <FavoriteStockCard
+              key={index}
+              ticker={favorite.ticker}
+              company={favorite.company}
+              currentPrice={favorite.currentPrice}
+              currency={favorite.currency}
+              percentageChange={favorite.percentageChange}
+              logoUri={favorite.logoUri}
+              onPress={() => navigation.navigate('StockDetails', { symbol: favorite.ticker })}
+            />
+          ))
+        ) : (
+          <Text style={styles.noFavoritesText}>No favorites added yet.</Text>
+        )}
+      </ScrollView>
         <SenateTradesCarousel></SenateTradesCarousel>
     </ScrollView>
   );
