@@ -372,19 +372,24 @@ const StockDetails = ({ route }) => {
       <View style={styles.chart}>
         <StockChart symbol={symbol} />
       </View>
-      <View style={styles.table}>
-        <View style={styles.column}>
-          {firstHalf.map(([key, value]) => (
-            <Text key={key} style={styles.quoteText}>{key}: {value}</Text>
-          ))}
-        </View>
-        <View style={styles.divider} />
-        <View style={styles.column}>
-          {secondHalf.map(([key, value]) => (
-            <Text key={key} style={styles.quoteText}>{key}: {value}</Text>
-          ))}
-        </View>
+      <View style={styles.quoteContainer}>
+  <View style={styles.quoteColumn}>
+    {firstHalf.map(([key, value]) => (
+      <View style={styles.quoteRow} key={key}>
+        <Text style={styles.quoteLabel}>{key}</Text>
+        <Text style={styles.quoteValue}>{value}</Text>
       </View>
+    ))}
+  </View>
+  <View style={styles.quoteColumn}>
+    {secondHalf.map(([key, value]) => (
+      <View style={styles.quoteRow} key={key}>
+        <Text style={styles.quoteLabel}>{key}</Text>
+        <Text style={styles.quoteValue}>{value}</Text>
+      </View>
+    ))}
+  </View>
+</View>
       <Text style={styles.holdings}>Holdings</Text>
       <HoldingsCard
         symbol={symbol}
@@ -515,7 +520,46 @@ const styles = StyleSheet.create({
     fontSize:20,
     padding:10,
     fontWeight:'600'
-  }
+  },
+  quoteContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 12, // increase vertical padding for more space
+    backgroundColor: '#FFF',
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#E1E1E1',
+  },
+  
+  quoteColumn: {
+    flex: 1,
+    paddingHorizontal: 12, // Adjust horizontal padding
+  },
+  
+  quoteRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 12, // Increase space between rows
+  },
+  
+  quoteLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginRight: 16, // Increase spacing if necessary
+  },
+  
+  quoteValue: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    textAlign: 'right', // Ensure values align to the right
+  },
+  
+  
+
+
 });
 
 export default StockDetails;

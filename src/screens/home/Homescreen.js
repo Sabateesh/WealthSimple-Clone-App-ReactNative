@@ -50,6 +50,7 @@ const HomeScreen = () => {
           const companyInfoResponse = await fetch(`http://127.0.0.1:5000/company_info?symbol=${tickerSymbol}`);
           const companyInfoData = await companyInfoResponse.json();
           const percentageChange = ((stockPriceData.price - stockPriceData.quote.Open) / stockPriceData.quote.Open) * 100;
+          const priceChangeColor = percentageChange >= 0 ? '#4CAF50' : '#F44336';
 
           return {
             ticker: tickerSymbol,
@@ -80,10 +81,13 @@ const HomeScreen = () => {
       clearInterval(interval);
       clearInterval(dailyInterval);
     };
+
   }, []);
   useEffect(() => {
     console.log('Favoritesww:', favorites);
   }, [favorites]);
+
+
   
 
   const updateBalance = async () => {
@@ -311,6 +315,17 @@ const styles = StyleSheet.create({
     paddingTop:25,
     paddingLeft:25,   
     paddingBottom:20
+  },
+  watchlistText:{
+    color:'#312F2E',
+    fontSize: 20,
+    fontWeight: '700',
+    paddingTop:25,
+    paddingLeft:25,   
+    paddingBottom:20
+  },
+  favoritesContainer:{
+    paddingLeft:20,
   }
 });
 
