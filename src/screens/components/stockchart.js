@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, ActivityIndicator, Button, StyleSheet } from 'react-native';
-import { LineGraph, onPointSelected } from 'react-native-graph';
+import { LineGraph } from 'react-native-graph';
 
 const StockChart = ({ symbol }) => {
   const [historicalData, setHistoricalData] = useState(null);
@@ -8,6 +8,9 @@ const StockChart = ({ symbol }) => {
   const [filteredData, setFilteredData] = useState(null);
   const [range, setRange] = useState('5y');
   const [priceDifference, setPriceDifference] = useState(null);
+  const [defaultPrice, setDefaultPrice] = useState(null);
+  const [currency, setCurrency] = useState(null);
+  const [percentageDifference, setPercentageDifference] = useState(null);
 
   useEffect(() => {
     const fetchStockHistory = async () => {
@@ -25,9 +28,66 @@ const StockChart = ({ symbol }) => {
         console.error('Error fetching stock history:', error);
       }
     };
+    const fetchCompanyInfo = async () => {
+      try {
+        const response = await fetch(`http://127.0.0.1:5000/company_info?symbol=${symbol}`);
+        const data = await response.json();
+        setCurrency(data.currency);
+      } catch (error) {
+        console.error('Error fetching company info:', error);
+      }
+    };
 
+    fetchCompanyInfo();
     fetchStockHistory();
   }, [symbol]);
+
+  useEffect(() => {
+    const fetchDefaultPrice = async () => {
+      try {
+        const response = await fetch(`https://sabateesh.pythonanywhere.com/stock_price?symbol=${symbol}`);
+        const data = await response.json();
+        setDefaultPrice(data.price);
+      } catch (error) {
+        console.error('Error fetching default price:', error);
+      }
+    };
+
+    fetchDefaultPrice();
+  }, [symbol]);
+
+  const calculatePriceDifference = () => {
+    if (historicalData && historicalData.length > 1) {
+      const startPrice = historicalData[0].value;
+      const endPrice = defaultPrice || historicalData[historicalData.length - 1].value;
+      const diff = endPrice - startPrice;
+      setPriceDifference(diff.toFixed(2));
+      const percentageDiff = (diff / startPrice) * 100;
+      setPercentageDifference(percentageDiff.toFixed(2));
+    } else {
+      setPriceDifference(null);
+      setPercentageDifference(null);
+    }
+  };
+
+  const getRangeText = () => {
+    switch (range) {
+      case '1w':
+        return 'past week';
+      case '1m':
+        return 'past month';
+      case '3m':
+        return 'past 3 months';
+      case '6m':
+        return 'past 6 months';
+      case '1y':
+        return 'past year';
+      case '5y':
+        return 'past 5 years';
+      default:
+        return 'past year';
+    }
+  };
 
   useEffect(() => {
     if (historicalData) {
@@ -70,18 +130,10 @@ const StockChart = ({ symbol }) => {
       }
 
       setFilteredData(filtered);
-      if (filtered.length > 1) {
-        const startPrice = filtered[0].value;
-        const endPrice = filtered[filtered.length - 1].value;
-        const diff = endPrice - startPrice;
-        setPriceDifference(diff.toFixed(2));
-        setSelectedPoint(filtered[filtered.length - 1]);
-      } else {
-        setPriceDifference(null);
-        setSelectedPoint(null);
-      }
+      calculatePriceDifference();
+      setSelectedPoint(filtered[filtered.length - 1] || null);
     }
-  }, [range, historicalData]);
+  }, [range, historicalData, defaultPrice]);
 
   const onPointSelected = (point) => {
     setSelectedPoint(point);
@@ -90,36 +142,47 @@ const StockChart = ({ symbol }) => {
       const selectedPrice = point.value;
       const diff = selectedPrice - startPrice;
       setPriceDifference(diff.toFixed(2));
-    } else {
-      if (filteredData.length > 1) {
-        const startPrice = filteredData[0].value;
-        const endPrice = filteredData[filteredData.length - 1].value;
-        const diff = endPrice - startPrice;
-        setPriceDifference(diff.toFixed(2));
-      } else {
+      const percentageDiff = (diff / startPrice) * 100;
+      setPercentageDifference(percentageDiff.toFixed(2));
+      setTimeout(() => {
+        setSelectedPoint(null);
         setPriceDifference(null);
-      }
+        setPercentageDifference(null);
+        calculatePriceDifference();
+      }, 5000);
     }
   };
-  
 
-  if (!filteredData) {
+  if (!filteredData || defaultPrice === null) {
     return <ActivityIndicator />;
   }
 
   return (
     <View>
-      {selectedPoint && (
+      {selectedPoint ? (
         <View>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#017560' }}>
-            ${selectedPoint.value.toFixed(1)}
-          </Text>
-          <Text style={{ color: 'gray' }}>
-            {selectedPoint.date.toDateString()}
+          <Text style={{ paddingLeft: 10, fontSize: 43, marginVertical: 5, fontWeight: 'bold', color:'#312F2E' }}>
+            ${selectedPoint.value.toFixed(2)}
+            <Text style={{fontSize: 20,fontWeight: "600"}}>{currency}</Text>
           </Text>
           {priceDifference && (
-            <Text style={{ color: priceDifference >= 0 ? 'green' : 'red' }}>
+            <Text style={{ color: priceDifference >= 0 ? '#466636' : '#A6421C', paddingLeft: 10, fontSize:18 }}>
               {priceDifference >= 0 ? `+ $${priceDifference}` : `- $${Math.abs(priceDifference)}`}
+            </Text>
+          )}
+          <Text style={{ color: 'gray' , paddingLeft: 10}}>
+            {selectedPoint.date.toDateString()}
+          </Text>
+        </View>
+      ) : (
+        <View>
+          <Text style={{paddingLeft: 10, fontSize: 43, marginVertical: 5, fontWeight: 'bold', color:'#312F2E'}}>
+            ${defaultPrice.toFixed(2)}
+            <Text style={{fontSize: 20,fontWeight: "600"}}>{currency}</Text>
+          </Text>
+          {priceDifference && percentageDifference && (
+            <Text style={{ color: priceDifference >= 0 ? '#466636' : '#A6421C', paddingLeft: 10, fontSize:18 }}>
+              {priceDifference >= 0 ? `+${priceDifference}` : priceDifference} ({percentageDifference}%) {getRangeText()}
             </Text>
           )}
         </View>
@@ -134,8 +197,7 @@ const StockChart = ({ symbol }) => {
         onPointSelected={onPointSelected}
         enableIndicator
         indicatorPulsating
-        enableFadeInMask  
-
+        enableFadeInMask
       />
       <View style={styles.buttonContainer}>
         <Button style={styles.button} title="1w" onPress={() => setRange('1w')} />
@@ -161,9 +223,7 @@ const styles = StyleSheet.create({
   button:{
     color:'#3F3E3D',
     backgroundColor: '#FCFCFC',
-
   }
 });
 
 export default StockChart;
-

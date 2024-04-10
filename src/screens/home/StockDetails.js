@@ -365,10 +365,12 @@ const StockDetails = ({ route }) => {
         <LogoFetcher tickerSymbol={cleanedSymbol} />
         <Text style={styles.title}>{stockData.companyName}</Text>
       </View>
+      {/*
       <Text style={styles.price}>
         {stockData.price ? `$${stockData.price.toFixed(2)}` : 'N/A'}
         <Text style={styles.currency}>{stockData.currency}</Text>
       </Text>
+      */}
       <View style={styles.chart}>
         <StockChart symbol={symbol} />
       </View>
@@ -514,7 +516,7 @@ const styles = StyleSheet.create({
     color:'#393737',
   },
   chart:{
-    marginTop:-30
+    marginTop:50
   },
   holdings:{
     fontSize:20,
@@ -524,7 +526,7 @@ const styles = StyleSheet.create({
   quoteContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 12, // increase vertical padding for more space
+    paddingVertical: 12,
     backgroundColor: '#FFF',
     borderTopWidth: 1,
     borderBottomWidth: 1,
@@ -533,28 +535,28 @@ const styles = StyleSheet.create({
   
   quoteColumn: {
     flex: 1,
-    paddingHorizontal: 12, // Adjust horizontal padding
+    paddingHorizontal: 12,
   },
   
   quoteRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12, // Increase space between rows
+    paddingVertical: 12, 
   },
   
   quoteLabel: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
-    marginRight: 16, // Increase spacing if necessary
+    marginRight: 16,
   },
   
   quoteValue: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333',
-    textAlign: 'right', // Ensure values align to the right
+    textAlign: 'right',
   },
   
   
