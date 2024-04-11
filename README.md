@@ -56,3 +56,7 @@ To run the Wealthsimple Practice app locally, follow these steps:
 - **react-native-graph**: to display stock trend line graph
 
 
+## App Demo
+
+- **Discover and Stock Details Page**:
+![Alt Text](Stock.gif)

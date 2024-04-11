@@ -145,9 +145,6 @@ const HomeScreen = () => {
     }
   };
   
-  
-  
-
   const loadPortfolioHistory = async () => {
     try {
       const storedHistory = await AsyncStorage.getItem('portfolioHistory');
@@ -170,7 +167,6 @@ const HomeScreen = () => {
     }
   };
   
-
   return (
     <ScrollView style={styles.container1}>
       <View style={styles.container}>
