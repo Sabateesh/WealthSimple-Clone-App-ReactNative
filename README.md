@@ -59,5 +59,8 @@ To run the Wealthsimple Practice app locally, follow these steps:
 ## App Demo
 
 - **Discover and Stock Details Page**:
+<img src='Stock.gif' width="70%" height="70%">
 
-![Alt Text](Stock.gif)
+- **Purchase Stocks, Activity and Holdings Page**:
+<img src='Stock2.gif' width="70%" height="70%">
+

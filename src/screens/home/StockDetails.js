@@ -9,6 +9,8 @@ import StockNews from '../components/StockNews';
 import HoldingsCard from '../components/holdingscard';
 import CompanyInfo from '../components/company_infor';
 import { useNavigation } from '@react-navigation/native';
+import { RefreshControl } from 'react-native';
+
 
 
 const StockDetails = ({ route }) => {
@@ -25,6 +27,10 @@ const StockDetails = ({ route }) => {
   const [priceBought, setPriceBought] = useState(0);
   const cleanedSymbol = symbol.replace('.TO', '');
   const [isFavorited, setIsFavorited] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(false);
+
+
 
   const handleFavorite = async () => {
     try {
@@ -125,14 +131,35 @@ const StockDetails = ({ route }) => {
     fetchBalance();
     fetchHoldingsData();
     checkFavoriteStatus();
+    const intervalId = setInterval(fetchHoldingsData, 1000);
+    return () => clearInterval(intervalId); 
 
-  }, [symbol]);
+
+
+    
+  }, [symbol, refreshTrigger]);
 
 
   useEffect(() => {
     navigation.setParams({ isFavorited, handleFavorite });
   }, [isFavorited, navigation]);
   
+  const onRefresh = () => {
+    setRefreshing(true);
+    try {
+      setRefreshTrigger(!refreshTrigger); // This will trigger the useEffect hook
+    } finally {
+      setRefreshing(false);
+    }
+  };
+  
+  
+  
+  
+  
+  
+  
+
 
 
   const handleBuy = async () => {
@@ -346,7 +373,14 @@ const StockDetails = ({ route }) => {
   const secondHalf = quoteEntries.slice(halfLength);
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}
+    refreshControl={
+      <RefreshControl
+        refreshing={refreshing}
+        onRefresh={onRefresh}
+      />
+    }
+    >
       <Dialog.Container visible={dialogVisible}>
         <Dialog.Title>Buy Shares</Dialog.Title>
         <Dialog.Description>

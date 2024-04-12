@@ -33,10 +33,12 @@ const HoldingsScreen = ({ route }) => {
         console.error('Invalid currentPrice for symbol:', item.symbol);
         return null;
     }
+    const cleanedSymbol = item.symbol.endsWith('.TO') ? item.symbol.replace('.TO', '') : item.symbol;
+
 
     return (
         <View style={styles.holdingItem}>
-            <LogoFetcher tickerSymbol={item.symbol} style={styles.logo} />
+            <LogoFetcher tickerSymbol={cleanedSymbol} style={styles.logo} />
             <View style={styles.stockInfo}>
                 <Text style={styles.symbol}>{item.symbol}</Text>
                 <Text style={styles.companyName}>{item.companyName}</Text>

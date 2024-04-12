@@ -43,12 +43,14 @@ const ActivityScreen = () => {
           const sign = item.action === 'Buy' ? '-' : '+';
           console.log('Action:', item.action, 'Sign:', sign); 
           const formattedAmount = (item.action === 'Buy' ? '-' : '+') + '$' + Math.abs(item.quantity * item.price).toFixed(2) + ' USD';
+          const cleanedSymbol = item.symbol.endsWith('.TO') ? item.symbol.replace('.TO', '') : item.symbol;
+
         
           return (
             <View style={styles.transactionItem}>
               <Text style={styles.dateText}>{new Date(item.date).toLocaleDateString()}</Text>
               <View style={styles.stockInfo}>
-                <LogoFetcher tickerSymbol={item.symbol} />
+                <LogoFetcher tickerSymbol={cleanedSymbol} />
                 <Text style={styles.tickerText}>{item.symbol}</Text>
                 <View style={styles.sharesContainer}>
                   <Text style={styles.sharesText}>{item.action}</Text>
